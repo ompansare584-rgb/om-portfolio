@@ -1,0 +1,142 @@
+@use 'tokens' as *;
+
+:root {
+  --ink: #{$ink};
+  --paper: #{$paper};
+  --brass: #{$brass};
+  --display: var(--ff-display, 'Rozha One'), 'Yatra One', Georgia, serif;
+  --body: var(--ff-body, 'Hind'), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  // window colours, set by the tiny pre-paint script from the visitor's local hour (see layout)
+  --sky-a: #0a0f2c;
+  --sky-b: #1a1f4a;
+}
+html[data-tod='dawn'] {
+  --sky-a: #2b1a3a;
+  --sky-b: #b8664a;
+}
+html[data-tod='day'] {
+  --sky-a: #20395f;
+  --sky-b: #5d86b0;
+}
+html[data-tod='golden'] {
+  --sky-a: #3a2210;
+  --sky-b: #c4833a;
+}
+html[data-tod='dusk'] {
+  --sky-a: #1a1030;
+  --sky-b: #7a3548;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+html {
+  background: $night;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  min-height: 100vh;
+  font-family: var(--body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: $on-dark;
+  background: linear-gradient(180deg, var(--sky-a), var(--sky-b) 70%, $night 130%) fixed, $night;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+a {
+  color: inherit;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+}
+:focus-visible {
+  outline: 3px solid #ffd27a;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+.sheet :focus-visible,
+.btn.on-paper:focus-visible {
+  outline-color: #1d63c9;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: $brass-hi;
+  color: $ink;
+  border-radius: 6px;
+  font-weight: 600;
+  &:focus {
+    top: 12px;
+  }
+}
+
+// Lenis (smooth scroll) needs these rules.
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+// The WebGL sky sits behind everything and never takes a click.
+.atmos {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  &.on {
+    opacity: 0.55;
+  }
+}
+.page {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

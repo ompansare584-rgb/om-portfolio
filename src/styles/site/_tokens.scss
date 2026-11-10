@@ -1,0 +1,36 @@
+// Design tokens for the scrolling pages (Hiring, Editing, Programme guide).
+// Same family as the radio: brass, paper, valve-radio wood, a window that follows the hour.
+$paper: #f8efd9;
+$paper-2: #efe2c2;
+$ink: #2b1a0e;
+$ink-soft: #5c4330;
+$link: #8a3d0b;
+$brass: #c9974a;
+$brass-hi: #f0d58a;
+$brass-lo: #7a5220;
+$red: #a3231a;
+$night: #14100a;
+$wood: #2a160a;
+$on-dark: #f3e6c4;
+$on-dark-soft: #cdb98d;
+
+$wrap: 1120px;
+$gutter: 16px;
+$bp-md: 760px;
+$bp-lg: 1040px;
+
+@mixin md {
+  @media (min-width: $bp-md) {
+    @content;
+  }
+}
+@mixin lg {
+  @media (min-width: $bp-lg) {
+    @content;
+  }
+}
+@mixin motion-ok {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
+  }
+}

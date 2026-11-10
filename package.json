@@ -1,0 +1,50 @@
+{
+  "name": "om-pansare-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Raag Radio: Om Pansare's portfolio. A vintage valve radio whose dial is a 24 hour clock.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "analyze": "cross-env ANALYZE=true next build",
+    "lhci": "lhci autorun",
+    "format": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
+    "check": "npm run typecheck && npm run lint",
+    "a11y": "axe http://localhost:3000 http://localhost:3000/hiring http://localhost:3000/editing --exit"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.0",
+    "gsap": "^3.13.0",
+    "lenis": "^1.3.0",
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sass": "^1.89.0",
+    "sharp": "^0.34.0",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@axe-core/cli": "^4.10.0",
+    "@eslint/eslintrc": "^3.3.0",
+    "@lhci/cli": "^0.15.0",
+    "@next/bundle-analyzer": "^15.5.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/three": "^0.180.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.5.0",
+    "prettier": "^3.6.0",
+    "typescript": "^5.9.0"
+  }
+}

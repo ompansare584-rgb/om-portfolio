@@ -1,0 +1,483 @@
+@use 'tokens' as *;
+
+.wrap {
+  width: 100%;
+  max-width: $wrap;
+  margin-inline: auto;
+  padding-inline: $gutter;
+  @include md {
+    padding-inline: 28px;
+  }
+}
+
+// ---------- header ----------
+.hdr {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: linear-gradient(180deg, rgba($wood, 0.96), rgba($wood, 0.9));
+  border-bottom: 2px solid $brass-lo;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  &__in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 58px;
+  }
+}
+.brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  text-decoration: none;
+  b {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.15rem;
+    color: $brass-hi;
+  }
+  span {
+    font-size: 0.78rem;
+    color: $on-dark-soft;
+    letter-spacing: 0.04em;
+  }
+}
+.nav {
+  display: none;
+  gap: 4px;
+  @include md {
+    display: flex;
+  }
+  a {
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 500;
+    color: $on-dark;
+    border: 1px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
+    &:hover {
+      background: rgba($brass-hi, 0.12);
+      border-color: rgba($brass-hi, 0.35);
+    }
+    &[aria-current='page'] {
+      background: $brass-hi;
+      color: $ink;
+    }
+  }
+}
+.menu-btn {
+  background: transparent;
+  border: 1px solid rgba($brass-hi, 0.5);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: $brass-hi;
+  font-weight: 600;
+  @include md {
+    display: none;
+  }
+}
+.menu {
+  border-top: 1px solid rgba($brass-hi, 0.25);
+  overflow: hidden;
+  a {
+    display: block;
+    padding: 14px $gutter;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid rgba($brass-hi, 0.12);
+    &[aria-current='page'] {
+      color: $brass-hi;
+    }
+  }
+}
+
+// ---------- paper sheets ----------
+.sheet {
+  position: relative;
+  background: linear-gradient(180deg, $paper, $paper-2);
+  color: $ink;
+  border-radius: 8px;
+  padding: 22px 20px;
+  border: 1px solid rgba($brass-lo, 0.45);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 14px 34px rgba(0, 0, 0, 0.38);
+  overflow: hidden;
+  @include md {
+    padding: 32px 36px;
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url(/textures/grain.svg);
+    opacity: 0.1;
+    pointer-events: none;
+  }
+  > * {
+    position: relative;
+  }
+  a:not(.btn):not(.card) {
+    color: $link;
+    text-underline-offset: 3px;
+  }
+  &--dark {
+    background: linear-gradient(180deg, #2a1a0c, #1c1209);
+    color: $on-dark;
+    border-color: rgba($brass-hi, 0.3);
+    a:not(.btn):not(.card) {
+      color: $brass-hi;
+    }
+  }
+}
+
+.main {
+  display: grid;
+  gap: 22px;
+  padding-block: 28px 56px;
+  @include md {
+    gap: 30px;
+    padding-block: 44px 80px;
+  }
+}
+
+// ---------- type ----------
+.eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $brass-lo;
+  font-weight: 600;
+  .sheet--dark & {
+    color: $brass-hi;
+  }
+}
+.h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(2rem, 6.5vw, 3.6rem);
+  line-height: 1.08;
+  margin-block: 6px 12px;
+}
+.h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.4rem, 3.6vw, 2rem);
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+.h3 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+.lede {
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+  max-width: 62ch;
+}
+.soft {
+  color: $ink-soft;
+  .sheet--dark & {
+    color: $on-dark-soft;
+  }
+}
+.dev {
+  font-family: var(--display);
+}
+
+// ---------- hero ----------
+.hero {
+  display: grid;
+  gap: 22px;
+  align-items: center;
+  @include md {
+    grid-template-columns: 1fr 260px;
+    gap: 40px;
+  }
+  &__pic {
+    justify-self: center;
+    width: min(60vw, 260px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 0 4px $brass, 0 0 0 7px rgba($brass-lo, 0.5), 0 18px 34px rgba(0, 0, 0, 0.45);
+    order: -1;
+    @include md {
+      order: 0;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+// ---------- buttons, chips ----------
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  border: 2px solid $brass-lo;
+  background: linear-gradient(180deg, $brass-hi, $brass);
+  color: $ink;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 3px 0 $brass-lo;
+  transition: transform 0.15s, box-shadow 0.15s;
+  &:hover {
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 $brass-lo;
+  }
+  &--ghost {
+    background: transparent;
+    box-shadow: none;
+    border-color: currentColor;
+    color: inherit;
+  }
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+  li {
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    background: rgba($brass-lo, 0.14);
+    border: 1px solid rgba($brass-lo, 0.35);
+  }
+}
+
+// ---------- grids ----------
+.grid {
+  display: grid;
+  gap: 16px;
+  @include md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  &--3 {
+    @include lg {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  &--4 {
+    @include md {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @include lg {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+.facts {
+  display: grid;
+  gap: 14px;
+  @include md {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+}
+
+// ---------- programme cards ----------
+.card {
+  position: relative;
+  display: block;
+  padding: 18px 18px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  background: linear-gradient(180deg, $paper, $paper-2);
+  color: $ink;
+  border: 1px solid rgba($brass-lo, 0.5);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: 0.82rem;
+    color: $ink-soft;
+    font-weight: 500;
+  }
+  .no {
+    font-family: var(--display);
+    color: $brass-lo;
+  }
+  .live {
+    color: $red;
+    font-weight: 600;
+  }
+  .dev {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+  .t {
+    margin-top: 6px;
+    font-weight: 600;
+  }
+  .s {
+    margin-top: 2px;
+    font-size: 0.95rem;
+    color: $ink-soft;
+  }
+  &:hover,
+  &:focus-visible {
+    border-color: $brass-lo;
+  }
+}
+
+// ---------- swara keys ----------
+.swaras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin-block: 12px;
+  li {
+    min-width: 44px;
+    text-align: center;
+    padding: 8px 10px 10px;
+    border-radius: 6px 6px 10px 10px;
+    background: linear-gradient(180deg, #fffaf0, #e8d9b4);
+    border: 1px solid $brass-lo;
+    box-shadow: 0 3px 0 $brass-lo;
+    font-family: var(--display);
+    font-size: 1.15rem;
+    color: $ink;
+    &.vadi {
+      background: linear-gradient(180deg, $brass-hi, $brass);
+    }
+  }
+}
+
+// ---------- empty states: honest, never filler ----------
+.empty {
+  padding: 22px;
+  border: 2px dashed rgba($brass-lo, 0.6);
+  border-radius: 8px;
+  background: rgba($brass-lo, 0.06);
+}
+.repo {
+  display: block;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba($brass-lo, 0.5);
+  background: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  b {
+    display: block;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.1rem;
+  }
+  span {
+    font-size: 0.92rem;
+    color: $ink-soft;
+  }
+}
+
+// ---------- forms ----------
+.form {
+  display: grid;
+  gap: 14px;
+  max-width: 640px;
+  label {
+    display: grid;
+    gap: 4px;
+    font-weight: 600;
+  }
+  input,
+  select,
+  textarea {
+    padding: 11px 12px;
+    border-radius: 6px;
+    border: 2px solid $brass-lo;
+    background: #fffdf6;
+    color: $ink;
+    font-weight: 400;
+  }
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+  .status {
+    min-height: 1.5em;
+    font-weight: 500;
+  }
+}
+
+// ---------- footer ----------
+.ftr {
+  position: relative;
+  z-index: 1;
+  background: #120c06;
+  border-top: 2px solid $brass-lo;
+  padding-block: 32px 40px;
+  color: $on-dark-soft;
+  font-size: 0.95rem;
+  &__in {
+    display: grid;
+    gap: 18px;
+    @include md {
+      grid-template-columns: 1.4fr 1fr 1fr;
+    }
+  }
+  h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.1rem;
+    color: $brass-hi;
+    margin-bottom: 6px;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 4px;
+  }
+  a {
+    color: $on-dark;
+    text-underline-offset: 3px;
+  }
+}
+.crumbs {
+  font-size: 0.9rem;
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+  }
+  li + li::before {
+    content: '/';
+    margin-right: 6px;
+    opacity: 0.6;
+  }
+}
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
