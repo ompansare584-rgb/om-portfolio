@@ -1,5 +1,5 @@
 /**
- * The 8 programmes (ragas). Every word here comes from Om's own introduction. Nothing is invented.
+ * The 8 programmes (ragas). Every programme is about Om's video-editing journey. He has only just started, so the text describes what he is learning and what he cares about, never finished client work. Nothing is invented.
  * Raga hours follow common textbook convention and vary by gharana.
  * Notation: capital = shuddha, lowercase r g d n = komal, M# = tivra Ma.
  */
@@ -48,16 +48,16 @@ export const RAGAS: Raga[] = [
     ],
     "vadi": "Ma",
     "vadiKey": "M",
-    "titleLat": "Raat Ka Khel",
-    "titleDev": "रात का खेल",
-    "subtitle": "The late-hour bulletin on games and digital worlds.",
-    "summary": "Games are interactive worlds that someone designed on purpose. I enjoy the environments, the rules and the creativity behind them, and the wider digital culture that grows around them.",
+    "titleLat": "Raat Ka Cut",
+    "titleDev": "रात का कट",
+    "subtitle": "The late-hour bulletin on cutting: the first assembly.",
+    "summary": "Every edit starts the same way: a pile of clips and an empty timeline. I am learning to sort footage, pick the best take and build a rough cut that tells the story before anything is polished.",
     "tags": [
-      "Gaming",
-      "Digital culture",
-      "Interactive worlds"
+      "Rough cut",
+      "Assembly",
+      "Timeline"
     ],
-    "note": "I’m drawn to interactive experiences that have an identity of their own, and I notice the small details that make them memorable. That eye for detail is what I want to bring to the things I build."
+    "note": "I have only just started editing, so I treat every rough cut as practice. The first goal is a story that holds together. Looking good comes second."
   },
   {
     "slug": "bhairav",
@@ -82,16 +82,16 @@ export const RAGAS: Raga[] = [
     ],
     "vadi": "Dha",
     "vadiKey": "d",
-    "titleLat": "Pehli Kiran",
-    "titleDev": "पहली किरण",
-    "subtitle": "The first bulletin of the day: who is behind the dial.",
-    "summary": "I’m Om Pansare, a first-year B.Tech Computer Science student in Pune. Curious, observant and ambitious, and happiest where technology meets creativity.",
+    "titleLat": "Pehla Frame",
+    "titleDev": "पहला फ्रेम",
+    "subtitle": "The dawn bulletin: who is behind the cuts.",
+    "summary": "I am Om, a first-year B.Tech student at VIT Pune, and I have just started learning video editing. I do not have a showreel yet and I will not pretend otherwise. This portfolio grows as my work does.",
     "tags": [
-      "Computer Science",
-      "Pune",
-      "Curious & creative"
+      "Beginner",
+      "Honest status",
+      "Learning in public"
     ],
-    "note": "Namaste, I’m Om, and I’d rather let my interests and my work speak than announce myself. In a few words: a curious mind, a creative perspective, and an appreciation for technology, art and meaningful experiences."
+    "note": "I would rather let the work speak than announce myself. So the first frame is an honest one: I am at the start, and I am learning on purpose."
   },
   {
     "slug": "bilaval",
@@ -116,16 +116,16 @@ export const RAGAS: Raga[] = [
     ],
     "vadi": "Dha",
     "vadiKey": "D",
-    "titleLat": "Campus Bulletin",
-    "titleDev": "कैंपस बुलेटिन",
-    "subtitle": "Where I study, and where I honestly stand.",
-    "summary": "B.Tech in Computer Science Engineering at Vishwakarma Institute of Technology (VIT Pune), Maharashtra. First year, academic year 2026–27.",
+    "titleLat": "Saaf Cut",
+    "titleDev": "साफ़ कट",
+    "subtitle": "The morning bulletin on clean, simple fundamentals.",
+    "summary": "Before effects and tricks come the basics: where to cut, how long to hold a shot, how a sound can lead the picture. These are the fundamentals I am studying first, with simple practice edits.",
     "tags": [
-      "VIT Pune",
-      "B.Tech CSE",
-      "2026–27"
+      "Pacing",
+      "Transitions",
+      "Fundamentals"
     ],
-    "note": "I’m at the very start of my professional journey: no internships, no formal resume and no showcase projects yet. I’d rather tell you that plainly than dress up unfinished experiments as achievements."
+    "note": "A clean cut is invisible. That is the standard I am practising towards, one small edit at a time."
   },
   {
     "slug": "todi",
@@ -150,16 +150,16 @@ export const RAGAS: Raga[] = [
     ],
     "vadi": "Dha",
     "vadiKey": "d",
-    "titleLat": "Tech Tarang",
-    "titleDev": "टेक तरंग",
-    "subtitle": "Software, AI and the ideas behind them.",
-    "summary": "I follow software, artificial intelligence and digital innovation closely: how technology solves problems, creates experiences and turns ordinary ideas into something extraordinary.",
+    "titleLat": "Rang Tarang",
+    "titleDev": "रंग तरंग",
+    "subtitle": "The mid-morning bulletin on colour and mood.",
+    "summary": "Colour is mood. DaVinci Resolve is built around grading, so it is where I am learning how contrast, white balance and a consistent look can turn plain footage into a feeling.",
     "tags": [
-      "Software",
-      "Artificial intelligence",
-      "Digital innovation"
+      "Colour grading",
+      "DaVinci Resolve",
+      "Mood"
     ],
-    "note": "I enjoy understanding how things work and trying out new concepts. I won’t call an experiment finished work until it is, so here you’ll find curiosity, not inflated claims."
+    "note": "The Raw to graded slider in the Edit bay is a small demo I made on this room’s own skyline. It is a practice piece, not a client job."
   },
   {
     "slug": "brindavani-sarang",
@@ -182,16 +182,16 @@ export const RAGAS: Raga[] = [
     ],
     "vadi": "Re",
     "vadiKey": "R",
-    "titleLat": "Design Dopahar",
-    "titleDev": "डिज़ाइन दोपहर",
-    "subtitle": "Interfaces, atmosphere and small details.",
-    "summary": "Thoughtful visual design, immersive digital experiences and creative interfaces: the small details that make something memorable and give it an identity of its own.",
+    "titleLat": "Chalti Tasveer",
+    "titleDev": "चलती तस्वीर",
+    "subtitle": "The noon bulletin on motion and titles.",
+    "summary": "After Effects is on my learning list for animated titles, lower thirds and small motion touches that make an edit feel finished. I am starting with the basics.",
     "tags": [
-      "Visual design",
-      "Creative interfaces",
-      "Immersive experiences"
+      "After Effects",
+      "Motion graphics",
+      "Titles"
     ],
-    "note": "I’m drawn to work with its own identity rather than conventional patterns. Technology gives me possibilities to explore, and creativity gives them individuality and expression."
+    "note": "I notice small details in interfaces and games, and motion design is where that eye for detail can go to work. I am a beginner here and I am glad to be one."
   },
   {
     "slug": "bhimpalasi",
@@ -218,14 +218,14 @@ export const RAGAS: Raga[] = [
     "vadiKey": "M",
     "titleLat": "Matinee Show",
     "titleDev": "मैटिनी शो",
-    "subtitle": "Cinema, editing and the language of images.",
-    "summary": "Cinematic storytelling, filmmaking, video editing and visual composition: how visuals, sound and atmosphere carry emotion without needing words.",
+    "subtitle": "The afternoon bulletin on cinematic storytelling.",
+    "summary": "Cinema is what pulled me towards editing. I am studying how a scene is built: framing, rhythm, reaction shots and silence. Premiere Pro is the timeline where I practise putting that into a cut.",
     "tags": [
-      "Filmmaking",
-      "Video editing",
-      "Visual composition"
+      "Storytelling",
+      "Premiere Pro",
+      "Cinema"
     ],
-    "note": "I love how a frame, a sound and a mood can say what words can’t. I’d like the things I build to carry that same feeling."
+    "note": "I am drawn to how pictures, sound and atmosphere can carry an emotion without needing words. That is the kind of edit I want to make."
   },
   {
     "slug": "yaman",
@@ -250,16 +250,17 @@ export const RAGAS: Raga[] = [
     ],
     "vadi": "Ga",
     "vadiKey": "G",
-    "titleLat": "Raag Darshan",
-    "titleDev": "राग दर्शन",
-    "subtitle": "A closer look at Indian classical music.",
-    "summary": "The world of ragas: their depth, structure, emotional expression and cultural heritage. Each raga evokes its own mood, and each one has its own hour of the day.",
+    "titleLat": "Sur Ke Saath Cut",
+    "titleDev": "सुर के साथ कट",
+    "subtitle": "The evening bulletin on cutting to music and sound.",
+    "summary": "I love Indian classical music and play the flute as a hobby, so I listen for rhythm before I look at pictures. I want my cuts to land with the music, and I am learning how sound and music carry a scene.",
     "tags": [
-      "Indian classical music",
-      "Ragas",
-      "Mood and structure"
+      "Music sync",
+      "Sound",
+      "Indian classical",
+      "Flute"
     ],
-    "note": "The way different ragas evoke different emotions is what draws me to them. This radio is my small way of tuning a portfolio to that idea."
+    "note": "A raga has a mood and a tempo, and so does an edit. Learning to feel one helps me with the other."
   },
   {
     "slug": "bihag",
@@ -285,16 +286,16 @@ export const RAGAS: Raga[] = [
     ],
     "vadi": "Ga",
     "vadiKey": "G",
-    "titleLat": "Meri Bansuri",
-    "titleDev": "मेरी बांसुरी",
-    "subtitle": "The night shift of this station: my flute.",
-    "summary": "I play the flute as a hobby, for the joy of it. It is the quiet, personal side of this station, alongside my love of Indian classical music.",
+    "titleLat": "Pehli Nazar",
+    "titleDev": "पहली नज़र",
+    "subtitle": "The night desk for stills: thumbnails, posters and covers.",
+    "summary": "Most people meet a video through its thumbnail. Photoshop and Canva are the tools I am learning for thumbnails, posters and covers that match the mood of the edit.",
     "tags": [
-      "Flute",
-      "Hobby",
-      "Music"
+      "Photoshop",
+      "Canva",
+      "Thumbnails"
     ],
-    "note": "I play the flute as a hobby, for the love of it. Alongside code, cinema and ragas, it’s one more way I express myself."
+    "note": "The still image is the first impression of a video. I want it to look as considered as the cut itself."
   }
 ];
 

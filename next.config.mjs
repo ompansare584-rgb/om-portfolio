@@ -42,11 +42,14 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    // the old Hiring page no longer exists: this portfolio is the video-editing one
+    return [{ source: '/hiring', destination: '/editing', permanent: true }];
+  },
   async rewrites() {
     // AI agents that send "Accept: text/markdown" get the clean markdown version of a page.
     const md = [
       ['/', '/llms-full.txt'],
-      ['/hiring', '/md/hiring'],
       ['/editing', '/md/editing'],
       ['/ragas', '/md/ragas'],
     ];

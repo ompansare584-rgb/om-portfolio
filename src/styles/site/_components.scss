@@ -481,3 +481,37 @@
   gap: 12px;
   flex-wrap: wrap;
 }
+
+// numbered "how I work" steps on the Edit bay page
+.steps {
+  list-style: none;
+  counter-reset: s;
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  li {
+    counter-increment: s;
+    position: relative;
+    padding: 12px 14px 12px 56px;
+    border: 1px solid rgba(122, 82, 32, 0.35);
+    border-radius: 8px;
+    line-height: 1.5;
+    &::before {
+      content: counter(s);
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-weight: 600;
+      color: #2b1a0e;
+      background: linear-gradient(180deg, #f0cf7c, #cf9a3e);
+    }
+    b {
+      display: block;
+    }
+  }
+}

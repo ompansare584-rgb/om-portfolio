@@ -1,10 +1,10 @@
 {
-  "name": "om-pansare-portfolio",
-  "version": "2.0.0",
+  "name": "om-porfolio-edting",
+  "version": "3.0.0",
   "private": true,
-  "description": "Raag Radio: Om Pansare's portfolio. A vintage valve radio whose dial is a 24 hour clock.",
+  "description": "Raag Radio: Om Pansare's video-editing portfolio. A vintage valve radio whose dial is a 24 hour clock.",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "20.x"
   },
   "scripts": {
     "dev": "next dev",
@@ -15,8 +15,7 @@
     "analyze": "cross-env ANALYZE=true next build",
     "lhci": "lhci autorun",
     "format": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
-    "check": "npm run typecheck && npm run lint",
-    "a11y": "axe http://localhost:3000 http://localhost:3000/hiring http://localhost:3000/editing --exit"
+    "check": "npm run typecheck && npm run lint"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",
@@ -33,7 +32,6 @@
     "three": "^0.180.0"
   },
   "devDependencies": {
-    "@axe-core/cli": "^4.10.0",
     "@eslint/eslintrc": "^3.3.0",
     "@lhci/cli": "^0.15.0",
     "@next/bundle-analyzer": "^15.5.0",

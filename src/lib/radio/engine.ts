@@ -14,7 +14,7 @@ if (started) return;
 started = true;
 'use strict';
 
-const CONFIG = { email: PERSON.email, githubUser: PERSON.githubUser, ...USER, songs: SONGS };
+const CONFIG = { email: PERSON.email, ...USER, songs: SONGS };
 
 /* ================= helpers ================= */
 const $  = (s, r = document) => r.querySelector(s);
@@ -54,6 +54,7 @@ const SOUND = (() => {
   const W = {};
   let tanOn = false, tanNext = 0, tanStep = 0, tanFirst = 'P', tanTimer = 0, tanFileSrc = null, crackTimer = 0;
   let ph = null, phIdx = -1, phTimer = 0, sign = null, preloaded = false;
+  let listen = 'flute', noteCb = null, sgT = [], swOf = () => [];   // what the radio plays: flute | sargam | song (drone only) | mute (quiet)
   const files = { phrases: {}, tanpura: null, signOn: null, signOff: null };
 
   const live = () => !!(ctx && engine && !quiet);
@@ -209,18 +210,31 @@ const SOUND = (() => {
   }
 
   /* ---------- the alaap cycle for the locked station ---------- */
-  function stopPhrase() { clearTimeout(phTimer); if (ph) { ph.stop(); ph = null; } phIdx = -1; }
+  function stopPhrase() { clearTimeout(phTimer); sgT.forEach(clearTimeout); sgT = []; if (noteCb) noteCb(null); if (ph) { ph.stop(); ph = null; } phIdx = -1; }
   function loop(idx) {
     if (phIdx !== idx || !live()) return;
     if (ctx.state !== 'running') { phTimer = setTimeout(() => loop(idx), 800); return; }   // tab hidden or still waking: wait, never stack phrases
     const id = IDS[idx], buf = files.phrases[id], t0 = ctx.currentTime + .3;
-    let len;
-    if (buf) { ph = playFile(buf, t0, .9); len = buf.duration; }
+    let len, gap = 7;
+    if (listen === 'sargam') {                                          // the raga's own notes, sung as sa re ga, with a caption per note
+      const sg = sargam(idx); ph = voice(sg.notes, t0, .32); len = sg.len; gap = 4;
+      sgT = sg.notes.filter(n => n.n !== '_').map(n => setTimeout(() => { if (noteCb && phIdx === idx) noteCb(n.n); }, Math.max(0, (t0 - ctx.currentTime + n.start) * 1000)));
+      sgT.push(setTimeout(() => { if (noteCb) noteCb(null); }, (len + .2) * 1000));
+    }
+    else if (buf) { ph = playFile(buf, t0, .9); len = buf.duration; }
     else { ph = voice(parse(PHR[id], 21), t0, .32); len = 21; }
-    phTimer = setTimeout(() => loop(idx), (len + .3 + 7) * 1000);       // then 7 s of drone alone, and again
+    phTimer = setTimeout(() => loop(idx), (len + .3 + gap) * 1000);     // then a few seconds of drone alone, and again
   }
+  const ORDER = ['S', 'r', 'R', 'g', 'G', 'M', 'M#', 'P', 'd', 'D', 'n', 'N'];
+  function sargam(idx) {                                                // aroha to upper Sa and back, using only this raga's swaras
+    const sw = ORDER.filter(x => swOf(idx).includes(x));
+    const toks = sw.map(x => x + ':1').concat(["S':1.2"], sw.slice().reverse().map((x, i, a) => x + (i === a.length - 1 ? ':3.2' : ':1')));
+    const sum = toks.reduce((a, t) => a + parseFloat(t.slice(t.lastIndexOf(':') + 1)), 0), len = sum * .62;
+    return { notes: parse(toks.join(' '), len), len };
+  }
+  function setListen(m) { listen = m; stopPhrase(); }
   function phrase(idx) {
-    if (!live()) return;
+    if (!live() || listen === 'song') return;
     if (sign) { sign.stop(.3); sign = null; }
     if (phIdx === idx) return;
     stopPhrase(); phIdx = idx; loop(idx);
@@ -404,7 +418,7 @@ const SOUND = (() => {
     else { forced = 1; setTune(1); tanG.gain.setTargetAtTime(v, ctx.currentTime, .3); }
   }
 
-  return { start, setQuiet, setVolume, setTune, setStation, phrase, stopPhrase, drone, signOn, releaseForce, cutSignOn, signOff, tock, tick, clunk, tink, duck, live, meter, key, chatter, clap, whirr, bed, harmOn, harmOff, harmStop, om, hasContext: () => !!ctx };
+  return { start, setQuiet, setVolume, setTune, setStation, phrase, stopPhrase, setListen, onNote: f => { noteCb = f; }, setSwaras: f => { swOf = f; }, drone, signOn, releaseForce, cutSignOn, signOff, tock, tick, clunk, tink, duck, live, meter, key, chatter, clap, whirr, bed, harmOn, harmOff, harmStop, om, hasContext: () => !!ctx };
 })();
 if (params.has('debug')) window.__raag = { meter: SOUND.meter };
 
@@ -433,6 +447,11 @@ const sun = $('#sun'), sunWarm = $('#sunWarm'), moon = $('#moon'), stars = $('#s
 const pool = $('#pool'), beam = $('#beam'), motes = $('#motes'), dim = $('#dim');
 const parFar = $('#parFar'), parMid = $('#parMid'), room = $('#room'), guide = $('#guide');
 const F = {}; $$('[data-f]', slip).forEach(n => F[n.dataset.f] = n);
+SOUND.setSwaras(i => P[i].swaras);
+let listenMode = 'flute', listenOpen = false, harmFree = true, harmOct = 0;
+try { const v = localStorage.getItem('raagradio.listen'); if (v === 'sargam' || v === 'song') listenMode = v; harmFree = localStorage.getItem('raagradio.free') !== '0'; } catch (e) {}
+const listenEl = $('#listen'), lsSub = $('#lsSub'), lsSong = $('#lsSong'), sgChip = $('#sgChip'), fabMute = $('#fabMute'), listenBtn = $('#listenOpen'), belowEl = $('#below');
+SOUND.setListen(listenMode);
 
 /* dial zones (station buttons) + scale */
 const zoneEls = P.map(p => {
@@ -468,7 +487,7 @@ const zoneEls = P.map(p => {
 const G = { W: innerWidth, H: innerHeight, dialW: 300, horizon: 130, peak: 76 };
 const state = { locked: -1, sweeping: false, touched: false, liveIdx: 0 };
 let powered = false, leaving = false, signing = false, signT = 0, hasPlayed = false, tuneNow = 0, lastTune = -1, quietPref = false;
-let farmOpen = false, flipped = false, view = 'explore', forView = 'hiring', lastRoom = 'hiring', exploreIntroDone = false, skyLocal = 12, harmOpen = false, deepRadio = false;
+let farmOpen = false, flipped = false, view = 'explore', forView = 'edit', lastRoom = 'edit', exploreIntroDone = false, skyLocal = 12, harmOpen = false, deepRadio = false;
 try { quietPref = localStorage.getItem('raagradio.quiet') === '1'; } catch (e) {}
 SOUND.setQuiet(quietPref);
 let cur = 0, target = 0, sv = 0, mv = 0, prevCur = 0, raw = 0;
@@ -521,7 +540,7 @@ function layout() {
   const skH = Math.round(clamp(G.H * .2, 110, 200));
   G.deskY = Math.round(clamp(G.H * .24, Math.min(130, G.H * .3), 230));
   root.style.setProperty('--deskY', G.deskY + 'px');
-  const base = view === 'explore' ? wr.top + 44 : G.deskY + 6;
+  const base = view === 'explore' ? wr.top + scrollY + 44 : G.deskY + 6;
   root.style.setProperty('--sk-h', skH + 'px');
   root.style.setProperty('--sk-top', Math.round(base - skH) + 'px');
   const celR = clamp(Math.min(G.W, G.H) * .08, 40, 80) / 2;
@@ -645,6 +664,7 @@ function fill(i) {
     const sg = Array.isArray(s.singers) ? s.singers : (s.singer ? [s.singer] : []);
     const c = document.createElement('span'); c.textContent = [sg.length && (sg.length > 1 ? 'Singers: ' : 'Singer: ') + sg.join(' & '), s.composer && 'Music: ' + s.composer].filter(Boolean).join(' · ');
     w.append(a, b, c);
+    if (s.raga) { const rg = document.createElement('span'); rg.className = 'np-raga'; rg.textContent = 'Raga: ' + s.raga + (s.ragaVerified ? '' : ' (to be confirmed)'); w.appendChild(rg); }
     if (s.url) { const l = document.createElement('a'); l.href = s.url; l.target = '_blank'; l.rel = 'noopener'; l.textContent = 'Listen ↗'; l.style.cssText = 'display:inline-block;margin-top:4px;font-weight:600'; w.appendChild(l); }
     F.np.appendChild(w);
   } else {
@@ -841,18 +861,23 @@ btnGuide.addEventListener('click', () => openGuide(true));
 gClose.addEventListener('click', closeGuide);
 
 /* ================= power, quiet mode ================= */
-const pw = $('#door'), pwKeys = $('#pwKeys'), pwCap = $('#pwCap'), pwRadio = $('#pwRadio'), pwQuiet = $('#pwQuiet'), pwGuide = $('#pwGuide');
+const pw = $('#door'), pwKeys = $('#pwKeys'), pwCap = $('#pwCap'), pwQuiet = $('#pwQuiet'), pwGuide = $('#pwGuide');
 const btnSound = $('#btnSound'), btnPower = $('#btnPower');
 function syncInert() {
   const ov = guide.classList.contains('open') || farmOpen, blocked = !powered || leaving || ov;
   const set = (el, off) => { el.inert = off; if (off) el.setAttribute('aria-hidden', 'true'); else el.removeAttribute('aria-hidden'); };
-  topbar.classList.toggle('idle', !powered); set(topbar, blocked); set(room, leaving || ov || (powered && view !== 'explore')); $('#dock').inert = blocked; set(pageH, blocked || view !== 'hiring'); set(pageE, blocked || view !== 'edit');
+  const away = leaving || ov || (powered && view !== 'explore');
+  topbar.classList.toggle('idle', !powered); set(topbar, blocked); set(room, away); set(belowEl, away); $('#dock').inert = blocked || harmOpen || listenOpen; set(pageE, blocked || view !== 'edit');
   harm.inert = blocked || !harmOpen; harmBtn.inert = blocked || harmOpen; miniRad.inert = blocked || view === 'explore';
+  listenEl.inert = blocked || !listenOpen; fabMute.inert = blocked; $('#cueMore').inert = ov;
+  document.body.classList.toggle('lock-scroll', ov);
 }
 function refreshQuietUI() {
   btnSound.setAttribute('aria-pressed', quietPref ? 'true' : 'false'); btnSound.classList.toggle('is-quiet', quietPref);
+  fabMute.classList.toggle('is-quiet', quietPref); fabMute.setAttribute('aria-pressed', quietPref ? 'true' : 'false'); fabMute.setAttribute('aria-label', quietPref ? 'Turn the radio sound on' : 'Mute the radio');
+  if (listenOpen) updateListenUI(); if (harmOpen) harmRefresh();
   pwQuiet.textContent = quietPref ? 'Sound on instead' : 'Quiet mode';
-  pwCap.textContent = quietPref ? 'Quiet mode is on, so nothing will play. Turn a knob on the radio, or press a key.' : 'A key switches the radio on and opens a room. Or turn a knob to just listen.';
+  pwCap.textContent = quietPref ? 'Quiet mode is on, so nothing will play. Turn a knob on the radio, or press a key.' : 'A key switches the radio on. Open the Edit bay, or just listen.';
 }
 function saveQuiet() { try { localStorage.setItem('raagradio.quiet', quietPref ? '1' : '0'); } catch (e) {} }
 function setQuietMode(q) {
@@ -869,7 +894,7 @@ function applyViewSound() {                                     // what you hear
   if (!SOUND.live()) return;
   SOUND.whirr(view === 'edit');
   if (view === 'explore') { SOUND.bed(null); lastTune = -1; SOUND.setTune(tuneNow); if (!signing && state.locked >= 0) SOUND.phrase(state.locked); }
-  else { SOUND.stopPhrase(); SOUND.bed(view === 'hiring' ? .5 : .32); }
+  else { SOUND.stopPhrase(); SOUND.bed(.32); }
 }
 function powerOn(v, viaKey) {
   if (powered || leaving) return;
@@ -893,7 +918,7 @@ function powerOff() {
   leaving = true; forView = view === 'explore' ? lastRoom : view; syncInert(); cancelAnim(); clearTimeout(signT); signing = false; SOUND.whirr(false); setHarm(false);
   SOUND.signOff(() => setTimeout(() => {
     powered = false; leaving = false; applyLock(-1); room.classList.add('off'); room.classList.remove('away');
-    Object.keys(PAGES).forEach(k => PAGES[k].classList.remove('on')); env.classList.remove('open');
+    Object.keys(PAGES).forEach(k => PAGES[k].classList.remove('on'));
     document.body.classList.remove('in-radio', 'in-room'); view = 'explore'; exploreIntroDone = false;
     skyLocal = localHour(); cur = clamp(skyLocal, 0, 24); target = cur; lastSky = -9; lastNear = -1; layout();
     $$('.key.big').forEach(k => k.classList.remove('down'));
@@ -906,12 +931,12 @@ pwGuide.addEventListener('click', () => openGuide(true));
 btnSound.addEventListener('click', () => setQuietMode(!quietPref));
 btnPower.addEventListener('click', powerOff);
 
-/* ================= rooms: Hiring (Placement desk), Editing (Edit bay), Explore (the radio) ================= */
-const topbar = $('#topbar'), pageH = $('#pageHiring'), pageE = $('#pageEdit'), keysEl = $('#keys'), btnRooms = $('#btnRooms');
-const PAGES = { hiring: pageH, edit: pageE };
-const ROOM_NAME = { hiring: 'the Placement desk', edit: 'the Edit bay', explore: 'the radio' };
-const ALIAS = { hiring: 'hiring', placement: 'hiring', hire: 'hiring', jobs: 'hiring', edit: 'edit', editing: 'edit', video: 'edit', explore: 'explore', radio: 'explore', afterhours: 'explore' };
-let introWait = 450, envT = 0, env = $('#env');
+/* ================= rooms: Editing (the Edit bay) and Explore (the radio) ================= */
+const topbar = $('#topbar'), pageE = $('#pageEdit'), keysEl = $('#keys'), btnRooms = $('#btnRooms');
+const PAGES = { edit: pageE };
+const ROOM_NAME = { edit: 'the Edit bay', explore: 'the radio' };
+const ALIAS = { edit: 'edit', editing: 'edit', video: 'edit', hiring: 'edit', hire: 'edit', jobs: 'edit', placement: 'edit', explore: 'explore', radio: 'explore', afterhours: 'explore' };
+let introWait = 450;
 const clapEl = $('#clap'), chipLab = $('#chipLab'), miniRad = $('#miniRad'), mrLab = $('#mrLab');
 
 function closeRooms() { keysEl.classList.remove('open'); btnRooms.setAttribute('aria-expanded', 'false'); }
@@ -929,13 +954,13 @@ function go(v, o) {
   const was = view; view = v;
   closeRooms();
   if (v !== 'explore') lastRoom = v;
+  document.body.classList.remove('past'); if (v !== 'explore' || was !== 'explore') scrollTo({ top: 0, behavior: 'auto' });
   document.body.classList.toggle('in-radio', v === 'explore');
   document.body.classList.toggle('in-room', v !== 'explore');
   if (v !== 'explore') { setHarm(false); if (flipped) setFlip(false, true); }
   $$('[data-go]').forEach(b => b.setAttribute('aria-pressed', b.dataset.go === v ? 'true' : 'false'));
   Object.keys(PAGES).forEach(k => PAGES[k].classList.toggle('on', k === v));
   room.classList.toggle('away', v !== 'explore');
-  clearTimeout(envT); env.classList.remove('open');
   skyLocal = localHour(); lastSky = -9;
   if (v === 'explore' && !exploreIntroDone) { cur = clamp(skyLocal, 0, 24); target = cur; }   // the sky does not jump on the first visit to the radio
   syncInert(); layout();
@@ -945,10 +970,7 @@ function go(v, o) {
     else { lastNear = -1; render(); }
   } else {
     const d = $('.desk', PAGES[v]); if (d) d.scrollTop = 0;
-    if (was !== v || o.first) {
-      if (v === 'hiring') { SOUND.chatter(1.7); envT = setTimeout(() => { if (view === 'hiring') env.classList.add('open'); }, 1900); }
-      else setTimeout(() => { if (view === 'edit') doClap(true); }, 500);
-    }
+    if (was !== v || o.first) setTimeout(() => { if (view === 'edit') doClap(true); }, 500);
   }
   applyViewSound();
   try { const u = new URL(location.href); u.searchParams.set('for', v); history.replaceState(null, '', u); } catch (e) {}
@@ -959,17 +981,14 @@ function go(v, o) {
 $$('[data-go]').forEach(b => b.addEventListener('click', () => { if (b.dataset.go !== view) go(b.dataset.go, { key: true }); }));
 $$('[data-room]').forEach(b => b.addEventListener('click', () => go(b.dataset.room, { key: true })));
 miniRad.addEventListener('click', () => go('explore', { key: true }));
-pwRadio.addEventListener('click', () => powerOn('explore'));
 // the radio on the first screen wakes when you touch it: any knob, the dial, the cabinet
 let wokeAt = 0; const wrapEl = $('#wrap');
 wrapEl.addEventListener('pointerdown', e => { if (powered || leaving || e.button > 0) return; e.preventDefault(); e.stopPropagation(); wokeAt = performance.now(); powerOn('explore'); }, true);
 wrapEl.addEventListener('click', e => { if (performance.now() - wokeAt < 700) { e.preventDefault(); e.stopPropagation(); } }, true);
 $$('[data-radio]').forEach(b => b.addEventListener('click', () => go('explore', { key: true })));
-$('#toProjects').addEventListener('click', e => { e.preventDefault(); $('#projects').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' }); });
 $$('[data-pick]').forEach(b => b.addEventListener('click', () => { b.classList.add('down'); powerOn(b.dataset.pick, true); }));
 btnRooms.addEventListener('click', e => { e.stopPropagation(); const o = !keysEl.classList.contains('open'); keysEl.classList.toggle('open', o); btnRooms.setAttribute('aria-expanded', o ? 'true' : 'false'); });
 document.addEventListener('click', e => { if (keysEl.classList.contains('open') && !keysEl.contains(e.target) && !btnRooms.contains(e.target)) closeRooms(); });
-$('#hireGuide').addEventListener('click', () => openGuide(true));
 clapEl.addEventListener('click', () => doClap());
 
 /* 3D tilt from a phone's motion sensor (pointer tilt is handled with the mouse parallax above) */
@@ -1001,11 +1020,11 @@ const harm = $('#harm'), harmBtn = $('#harmOpen'), hkeysEl = $('#hkeys'), harmCa
 const HK = {}, HKS = [];
 const NAMES = { S: 'Sa', r: 'Re komal', R: 'Re', g: 'Ga komal', G: 'Ga', M: 'Ma', 'M#': 'Ma tivra', P: 'Pa', d: 'Dha komal', D: 'Dha', n: 'Ni komal', N: 'Ni' };
 const ragaNow = () => state.locked >= 0 ? state.locked : idxOf(cur);
-const allowed = o => o.s === 'S' || P[ragaNow()].swaras.includes(o.s);
+const allowed = o => harmFree || o.s === 'S' || P[ragaNow()].swaras.includes(o.s);
 function keyOn(o, id) {
   if (!allowed(o)) { o.el.classList.remove('shake'); void o.el.offsetWidth; o.el.classList.add('shake'); SOUND.tick(.8); return; }
   if (o.ids.has(id)) return;
-  o.ids.add(id); o.el.classList.add('down'); SOUND.harmOn(o.k + ':' + id, o.ratio);
+  o.ids.add(id); o.el.classList.add('down'); SOUND.harmOn(o.k + ':' + id, o.ratio * Math.pow(2, harmOct));
 }
 function keyOff(o, id) {
   if (!o.ids.delete(id)) return;
@@ -1016,8 +1035,9 @@ function harmRefresh() {
   const p = P[ragaNow()];
   HKS.forEach(o => { const ok = allowed(o); o.el.classList.toggle('lock', !ok); o.el.classList.toggle('vadi', ok && o.s === p.vadiKey && !o.up); o.el.setAttribute('aria-disabled', ok ? 'false' : 'true'); });
   harmCap.textContent = '';
-  const b = document.createElement('b'); b.textContent = 'Raag ' + p.lat;
-  harmCap.append(b, ' · ' + p.swaras.map(t => t.replace('#', '♯')).join(' ') + ' · the other keys are locked' + (quietPref ? ' · Quiet mode is on, so it is silent' : ''));
+  const b = document.createElement('b'); b.textContent = harmFree ? 'Free play' : 'Raga lock · Raag ' + p.lat;
+  harmCap.append(b, harmFree ? ' · every key sounds. Choose Raga lock to play only Raag ' + p.lat + '’s own notes.' : ' · ' + p.swaras.map(t => t.replace('#', '♯')).join(' ') + ' · the other keys are locked.');
+  if (quietPref) harmCap.append(' Quiet mode is on, so it is silent.');
 }
 function setHarm(o) {
   if (o === harmOpen) return;
@@ -1053,16 +1073,89 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => { const o = HK[e.key.length === 1 ? e.key.toLowerCase() : '']; if (o) keyOff(o, 'kb'); });
 addEventListener('blur', () => HKS.forEach(o => o.ids.forEach(id => keyOff(o, id))));
 
+/* ================= Listen chooser (flute / sargam / a film song / mute), the always-there mute button, the page below the radio ================= */
+const SG = { S: 'Sa', r: 'Re komal', R: 'Re', g: 'Ga komal', G: 'Ga', M: 'Ma', 'M#': 'Ma tivra', P: 'Pa', d: 'Dha komal', D: 'Dha', n: 'Ni komal', N: 'Ni' };
+SOUND.onNote(tok => {
+  if (tok == null) { sgChip.classList.remove('on'); return; }
+  const up = tok.endsWith("'"), t = tok.replace(/^,|'$/g, '');
+  sgChip.textContent = 'Sargam · ' + (SG[t] || t) + (up ? ' (upper)' : ''); sgChip.classList.add('on');
+});
+function updateListenUI() {
+  const p = P[state.locked >= 0 ? state.locked : idxOf(cur)], s = CONFIG.songs[p.id];
+  lsSub.textContent = 'Raag ' + p.lat + ' · ' + p.window;
+  $$('.ls-o', listenEl).forEach(b => b.setAttribute('aria-checked', String(quietPref ? b.dataset.mode === 'mute' : b.dataset.mode === listenMode)));
+  lsSong.textContent = '';
+  const song = !quietPref && listenMode === 'song';
+  lsSong.hidden = !song;
+  if (!song) return;
+  if (s && s.title) {
+    const sg = Array.isArray(s.singers) ? s.singers : [];
+    const b = document.createElement('b'); b.textContent = s.title;
+    lsSong.append(b, ' (' + [s.film, s.year].filter(Boolean).join(', ') + ')' + (sg.length ? ', sung by ' + sg.join(' & ') : '') + (s.composer ? ', music by ' + s.composer : '') + '.');
+    if (s.raga) lsSong.append(document.createElement('br'), 'Raga: ' + s.raga + (s.ragaVerified ? '.' : ' (to be confirmed).'));
+    if (s.url) { const a = document.createElement('a'); a.className = 'ls-go'; a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Play it on YouTube ↗'; lsSong.append(document.createElement('br'), a); }
+  } else {
+    lsSong.append('Farmaish pending: a film song in Raag ' + p.lat + ' will be added here once its raga is confirmed.');
+  }
+}
+function openListen(o) {
+  if (o === listenOpen) return;
+  listenOpen = o; listenEl.classList.toggle('open', o); listenBtn.setAttribute('aria-expanded', String(o));
+  if (o) { setHarm(false); updateListenUI(); }
+  syncInert();
+}
+function chooseListen(m) {
+  if (m === 'mute') { setQuietMode(true); return; }
+  listenMode = m; try { localStorage.setItem('raagradio.listen', m); } catch (e) {}
+  SOUND.setListen(m);                                              // stored first, so unmuting below starts the right thing
+  if (quietPref) setQuietMode(false);
+  else { updateListenUI(); if (powered && !leaving && view === 'explore' && !signing && state.locked >= 0) SOUND.phrase(state.locked); }
+  if (m === 'song' && !quietPref) toast('Song mode: the radio keeps its drone. Open the song from this panel.');
+}
+$$('.ls-o', listenEl).forEach(b => b.addEventListener('click', () => chooseListen(b.dataset.mode)));
+listenBtn.addEventListener('click', () => { openListen(!listenOpen); if (listenOpen) setTimeout(() => { const c = $('.ls-o[aria-checked="true"]', listenEl); if (c) c.focus({ preventScroll: true }); }, 60); });
+$('#lsX').addEventListener('click', () => { openListen(false); listenBtn.focus({ preventScroll: true }); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && listenOpen) { openListen(false); listenBtn.focus({ preventScroll: true }); } });
+fabMute.addEventListener('click', () => setQuietMode(!quietPref));
+
+/* free-play harmonium + octave */
+const harmFreeBtn = $('#harmFree'), octLab = $('#octLab');
+harmFreeBtn.setAttribute('aria-pressed', String(harmFree));
+harmFreeBtn.addEventListener('click', () => {
+  harmFree = !harmFree; try { localStorage.setItem('raagradio.free', harmFree ? '1' : '0'); } catch (e) {}
+  harmFreeBtn.setAttribute('aria-pressed', String(harmFree)); harmRefresh();
+});
+function setOct(d) { harmOct = clamp(harmOct + d, -1, 1); octLab.textContent = 'Octave ' + (harmOct > 0 ? '+' : '') + harmOct; }
+$('#octUp').addEventListener('click', () => setOct(1));
+$('#octDn').addEventListener('click', () => setOct(-1));
+harmBtn.addEventListener('click', () => { if (listenOpen) openListen(false); });
+
+/* the page below the radio */
+$$('[data-enter]').forEach(b => b.addEventListener('click', () => { scrollTo({ top: 0, behavior: 'auto' }); if (!powered) powerOn('edit', true); else go('edit', { key: true }); }));
+$$('[data-guide]').forEach(b => b.addEventListener('click', () => openGuide(true)));
+$$('[data-open]').forEach(b => b.addEventListener('click', () => {
+  const w = b.dataset.open, run = () => { if (w === 'listen') openListen(true); else setHarm(true); };
+  scrollTo({ top: 0, behavior: 'auto' });
+  if (!powered) { powerOn('explore', true); setTimeout(run, 600); }
+  else if (view !== 'explore') { go('explore', { key: true }); setTimeout(run, 450); }
+  else run();
+}));
+const scrollBelow = () => belowEl.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' });
+$('#moreBtn').addEventListener('click', scrollBelow);
+$('#cueMore').addEventListener('click', scrollBelow);
+let pastQ = 0;
+addEventListener('scroll', () => { if (pastQ) return; pastQ = requestAnimationFrame(() => { pastQ = 0; document.body.classList.toggle('past', scrollY > innerHeight * .45); }); }, { passive: true });
+
 
 /* ================= Stage 4: back panel ================= */
 const rback = $('#rback'), flipBtn = $('#flipBtn'), flipLab = $('#flipLab'), bsTitle = $('#bsTitle'), bsText = $('#bsText'), bsAct = $('#bsAct');
 const VALVES = [
-  { n: ['Software'], t: 'Software is one of the areas I follow most closely. I am a first-year Computer Science Engineering student at VIT Pune, so this is where I am learning, not a claim of expertise.', a: ['Open the Placement desk', () => go('hiring', { key: true })] },
-  { n: ['Artificial', 'intelligence'], t: 'Another area I follow with curiosity. I have no AI project to show yet. When I do, it will be pinned in Projects with what I learned from it.', a: ['See the Projects shelf', () => { go('hiring', { key: true }); setTimeout(() => $('#projects').scrollIntoView({ behavior: 'auto', block: 'start' }), 300); }] },
-  { n: ['Digital', 'innovation'], t: 'I like watching how new technology changes what people can make and experience. It is part of what I follow, alongside art and meaningful experiences.', a: null },
-  { n: ['Creative', 'interfaces'], t: 'Interfaces that feel like something, not only something that works. This radio, with its dial, knobs and ragas, is my small attempt at one.', a: ['Turn the dial', () => setFlip(false)] },
-  { n: ['Cinema &', 'editing'], t: 'Cinematic storytelling, video editing, visual composition and filmmaking. I have no finished edits online yet, and the Edit bay says so honestly.', a: ['Open the Edit bay', () => go('edit', { key: true })] },
-  { n: ['Flute &', 'ragas'], t: 'I play the flute as a hobby, for the love of it, and I love Indian classical music and old songs. Bihag, the night station, is the flute one.', a: ['Tune to Bihag', () => { setFlip(false); touched(); tuneTo(7, 'key'); }] }
+  { n: ['DaVinci', 'Resolve'], t: 'Where I am learning colour grading, and cutting too. Resolve is built around colour, so it teaches how contrast and a look create a mood. I am a beginner here.', a: ['Tune to Rang Tarang', () => { setFlip(false); touched(); tuneTo(3, 'key'); }] },
+  { n: ['Premiere', 'Pro'], t: 'My timeline for storytelling: assembling scenes, pacing and rhythm. I am learning it, not claiming mastery.', a: ['Tune to Matinee Show', () => { setFlip(false); touched(); tuneTo(5, 'key'); }] },
+  { n: ['After', 'Effects'], t: 'On my learning list for animated titles and small motion touches. I am starting with the basics, so there is nothing to show yet.', a: ['Tune to Chalti Tasveer', () => { setFlip(false); touched(); tuneTo(4, 'key'); }] },
+  { n: ['Photoshop'], t: 'For thumbnails, posters and cover images that match the mood of an edit. Learning, one design at a time.', a: ['Tune to Pehli Nazar', () => { setFlip(false); touched(); tuneTo(7, 'key'); }] },
+  { n: ['Canva'], t: 'For quick graphics and social posts, where speed matters more than polish. Also one of the apps I am learning.', a: ['Open the Edit bay', () => go('edit', { key: true })] },
+  { n: ['Flute &', 'rhythm'], t: 'I play the flute as a hobby and love Indian classical music, so I listen for rhythm before pictures. I want my cuts to land with the music. Yaman, the dusk station, is where that lives.', a: ['Tune to Yaman', () => { setFlip(false); touched(); tuneTo(6, 'key'); }] }
 ];
 const NS = 'http://www.w3.org/2000/svg';
 function buildBack() {
@@ -1082,7 +1175,7 @@ function buildBack() {
       + `<rect x="${x - 19}" y="${top ? 96 : 118}" width="38" height="10" rx="2" fill="#b88636"/><path d="M${x - 9} ${top ? 106 : 118}v${top ? 5 : -5}M${x} ${top ? 106 : 118}v${top ? 5 : -5}M${x + 9} ${top ? 106 : 118}v${top ? 5 : -5}" stroke="#d9b160" stroke-width="1.6"/>`
       + `<text class="lbl" x="${x}" y="${ly}">${lines}</text></g>`;
   });
-  g += '<rect x="52" y="214" width="148" height="44" rx="5" fill="#2b1a0e" stroke="#d9b160" stroke-width="1.4"/><text x="126" y="238" text-anchor="middle" style="font-size:17px;font-weight:700;letter-spacing:.2em" fill="#f6dc90">OM</text><text x="126" y="251" text-anchor="middle" style="font-size:8px;letter-spacing:.12em">FIRST YEAR · 2026–27</text>';
+  g += '<rect x="52" y="214" width="148" height="44" rx="5" fill="#2b1a0e" stroke="#d9b160" stroke-width="1.4"/><text x="126" y="238" text-anchor="middle" style="font-size:17px;font-weight:700;letter-spacing:.2em" fill="#f6dc90">OM</text><text x="126" y="251" text-anchor="middle" style="font-size:8px;letter-spacing:.1em">EDITOR IN THE MAKING</text>';
   // Raga Clock: eight slices, one per station, needle at the visitor's local time
   const cx = 290, cy = 112, ro = 50, ri = 22, pt = (r, d) => [(cx + r * Math.sin(d * Math.PI / 180)).toFixed(1), (cy - r * Math.cos(d * Math.PI / 180)).toFixed(1)];
   for (let i = 0; i < 8; i++) {
@@ -1125,51 +1218,14 @@ function selectValve(i) {
 }
 function setFlip(o, quick) {
   if (o === flipped) return;
-  flipped = o; room.classList.toggle('flip', o); flipBtn.setAttribute('aria-pressed', o ? 'true' : 'false'); flipLab.textContent = o ? 'Front of the set' : 'Back panel';
+  flipped = o; room.classList.toggle('flip', o); flipBtn.setAttribute('aria-pressed', o ? 'true' : 'false'); flipLab.textContent = o ? 'Front of the set' : 'Back panel'; flipLab.dataset.s = o ? 'Front' : 'Back';
   ['.r-top', '.bezel', '.r-low'].forEach(q => { const e = $(q, $('.radio')); if (e) e.inert = o; });
   rback.inert = !o; rback.setAttribute('aria-hidden', o ? 'false' : 'true');
-  if (o) { if (!rback.firstChild) buildBack(); loadGitHub().then(showGhStat); }
+  if (o && !rback.firstChild) buildBack();
   if (!quick) { SOUND.clunk(); }
 }
 flipBtn.addEventListener('click', () => setFlip(!flipped));
 rback.inert = true;
-
-/* ================= live GitHub (public API, no login): back panel + Projects shelf ================= */
-const GH = { p: null };
-function loadGitHub() {
-  if (GH.p) return GH.p;
-  const u = CONFIG.githubUser;
-  if (!u || !window.fetch) return (GH.p = Promise.resolve(null));
-  try { const c = JSON.parse(sessionStorage.getItem('raag.gh') || 'null'); if (c && c.u === u && Date.now() - c.t < 6e5) return (GH.p = Promise.resolve(c.d)); } catch (_) {}
-  const j = url => fetch(url, { headers: { Accept: 'application/vnd.github+json' } }).then(r => { if (!r.ok) throw 0; return r.json(); });
-  GH.p = Promise.all([j('https://api.github.com/users/' + encodeURIComponent(u)), j('https://api.github.com/users/' + encodeURIComponent(u) + '/repos?sort=pushed&per_page=20')]).then(([usr, repos]) => {
-    const d = { repos: usr.public_repos | 0, followers: usr.followers | 0, since: String(usr.created_at || '').slice(0, 4),
-      list: (Array.isArray(repos) ? repos : []).filter(r => !r.fork && !r.archived).slice(0, 4).map(r => ({ name: String(r.name), desc: String(r.description || ''), lang: String(r.language || ''), url: String(r.html_url), pushed: String(r.pushed_at || '').slice(0, 7) })) };
-    try { sessionStorage.setItem('raag.gh', JSON.stringify({ t: Date.now(), u, d })); } catch (_) {}
-    return d;
-  }).catch(() => null);
-  return GH.p;
-}
-function showGhStat(d) {
-  const el = $('#ghStat'); if (!el || !d) return;
-  el.textContent = ' · ' + d.repos + ' public ' + (d.repos === 1 ? 'repository' : 'repositories') + (d.followers ? ' · ' + d.followers + ' followers' : '') + (d.since ? ' · since ' + d.since : '');
-}
-let ghDone = false;
-// Network only after the visitor first interacts, so a page load (and Lighthouse) never makes an outside request.
-const ghInit = () => { if (ghDone) return; ghDone = true; loadGitHub().then(d => {
-  if (!d || !d.list.length) return;
-  const box = $('#ghBox'), peg = $('#ghPeg'); box.hidden = false;
-  d.list.forEach(r => {
-    const c = document.createElement('article'); c.className = 'proj';
-    const h = document.createElement('h3'); h.textContent = r.name; c.appendChild(h);
-    if (r.desc) { const p = document.createElement('p'); p.textContent = r.desc; c.appendChild(p); }
-    const m = document.createElement('p'); m.className = 'meta'; m.textContent = [r.lang, r.pushed && 'pushed ' + r.pushed].filter(Boolean).join(' · '); c.appendChild(m);
-    const lk = document.createElement('div'); lk.className = 'lk'; const a = document.createElement('a'); a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Code ↗'; lk.appendChild(a); c.appendChild(lk);
-    peg.appendChild(c);
-  });
-}); };
-addEventListener('pointerdown', ghInit, { once: true, passive: true });
-addEventListener('keydown', ghInit, { once: true, passive: true });
 
 /* ================= Stage 5: farmaish postcard, toast and the two easter eggs ================= */
 const farm = $('#farm'), pc = $('#pc'), pcStatus = $('#pcStatus'), pcStamp = $('#pcStamp'), toastEl = $('#toast');
@@ -1227,42 +1283,12 @@ farm.addEventListener('pointerdown', e => { if (e.target === farm) closeFarm(); 
 function buildRooms() {
   const mk = (tag, cls, txt) => { const n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
 
-  // Placement desk: one honest line, projects, resume envelope
-  if (CONFIG.lookingFor) { const l = $('#shLook'); l.hidden = false; l.textContent = ''; l.append(mk('b', '', 'Looking for: '), CONFIG.lookingFor); }
-  if ((CONFIG.tools || []).length) { $('#shTools').hidden = false; CONFIG.tools.forEach(t => $('#shToolsList').appendChild(mk('li', '', t))); }
-  const peg = $('#peg'), PR = CONFIG.projects || [];
-  PR.forEach(p => {
-    const c = mk('article', 'proj'); c.appendChild(mk('h3', '', p.name || 'Project'));
-    if (p.line) c.appendChild(mk('p', '', p.line));
-    if (p.tech && p.tech.length) { const ul = mk('ul', 'sh-tags'); p.tech.forEach(t => ul.appendChild(mk('li', '', t))); c.appendChild(ul); }
-    if (p.lesson) c.appendChild(mk('p', '', 'What I learned: ' + p.lesson));
-    if (p.url || p.repo) {
-      const lk = mk('div', 'lk');
-      [[p.url, 'See it ↗'], [p.repo, 'Code ↗']].forEach(([u, t]) => { if (u) { const a = mk('a', '', t); a.href = u; a.target = '_blank'; a.rel = 'noopener'; lk.appendChild(a); } });
-      c.appendChild(lk);
-    }
-    if (!RM) {                                                       // the card tilts toward the pointer
-      c.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; const r = c.getBoundingClientRect(); c.style.setProperty('--ry', (((e.clientX - r.left) / r.width - .5) * 10).toFixed(2) + 'deg'); c.style.setProperty('--rx', (-((e.clientY - r.top) / r.height - .5) * 10).toFixed(2) + 'deg'); });
-      c.addEventListener('pointerleave', () => { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
-    }
-    peg.appendChild(c);
-  });
-  for (let i = 1; i <= (PR.length ? 1 : 3); i++) {                   // honest empty slots, never fake projects
-    const sl = mk('div', 'pslot'); sl.append(mk('b', '', 'Slot 0' + (PR.length + i)), mk('span', '', PR.length ? 'Reserved for the next one.' : i === 1 ? 'Reserved for the first project I finish. It will land here with a short write-up and what I learned.' : 'Empty for now.'));
-    peg.appendChild(sl);
-  }
-  if (CONFIG.resumeUrl) {                                           // the envelope becomes a real download link
-    const a = document.createElement('a'); a.className = 'env'; a.href = CONFIG.resumeUrl; a.target = '_blank'; a.rel = 'noopener';
-    a.setAttribute('aria-label', 'Download my resume'); a.innerHTML = env.innerHTML; env.replaceWith(a); env = a;
-    $('#envSub').textContent = 'Open the PDF'; $('#envStamp').textContent = 'PDF';
-  } else env.addEventListener('click', () => env.classList.toggle('open'));
-
   // Edit bay: film strip frames
   const strip = $('#strip'), note = $('#stripNote'), E = CONFIG.edits || [];
   if (!E.length) {
     for (let i = 1; i <= 3; i++) {
-      const f = mk('div', 'cel empty'); f.setAttribute('role', 'img'); f.setAttribute('aria-label', 'Empty frame ' + i + ', reel loading');
-      f.append(mk('em', '', '0' + i), mk('i', 'lamp2'), mk('span', '', 'Reel loading')); strip.appendChild(f);
+      const f = mk('div', 'cel empty'); f.setAttribute('role', 'img'); f.setAttribute('aria-label', 'Empty frame ' + i + ', first cut soon');
+      f.append(mk('em', '', '0' + i), mk('i', 'lamp2'), mk('span', '', 'First cut soon')); strip.appendChild(f);
     }
   } else {
     note.textContent = 'Pick a frame to watch it.';
@@ -1271,6 +1297,7 @@ function buildRooms() {
       if (ed.url) { a.href = ed.url; a.target = '_blank'; a.rel = 'noopener'; a.addEventListener('click', () => SOUND.clap()); }
       if (ed.thumb) a.style.setProperty('--bg', 'url("' + String(ed.thumb).replace(/"/g, '') + '")');
       a.append(mk('strong', '', ed.title || 'Untitled'), mk('span', '', ed.line || ''));
+      if (ed.tool) a.append(mk('small', '', ed.tool));
       strip.appendChild(a);
     });
   }
@@ -1292,7 +1319,7 @@ function buildRooms() {
   // send a brief: opens an email, or posts to Formspree when you add one in the config
   const bf = $('#briefForm'), st = $('#bfStatus'), stamp = $('#bfStamp');
   const read = () => { const f = new FormData(bf), g = k => String(f.get(k) || '').trim(); return { name: g('name'), email: g('email'), kind: g('kind'), msg: g('msg') }; };
-  const body = b => `Hi Om,\n\nI have a video to cut.\n\nType: ${b.kind}\nDetails: ${b.msg}\n\nFrom: ${b.name || '(name)'}${b.email ? ' <' + b.email + '>' : ''}`;
+  const body = b => `Hi Om,\n\nI would like to send you a brief.\n\nType: ${b.kind}\nDetails: ${b.msg}\n\nFrom: ${b.name || '(name)'}${b.email ? ' <' + b.email + '>' : ''}`;
   const done = txt => { st.textContent = txt; stamp.classList.add('show'); setTimeout(() => stamp.classList.remove('show'), 4000); };
   bf.addEventListener('submit', e => {
     e.preventDefault(); const b = read();
@@ -1316,7 +1343,6 @@ function buildRooms() {
 
 
 /* ================= clock, deep links, boot ================= */
-$$('[data-resume]').forEach(el => { if (!CONFIG.resumeUrl) return; const a = document.createElement('a'); a.href = CONFIG.resumeUrl; a.target = '_blank'; a.rel = 'noopener'; a.innerHTML = 'Resume <span aria-hidden="true">↗</span>'; el.replaceWith(a); });
 function localHour() { const d = new Date(); return d.getHours() + d.getMinutes() / 60; }
 let forced = false, startIdx;
 (function boot() {
@@ -1336,7 +1362,7 @@ let forced = false, startIdx;
   P.forEach(p => {                                                // the guide also lists each programme's song (real HTML text)
     const sg = CONFIG.songs[p.id]; if (!sg || !sg.title) return;
     const el = document.createElement('p'); el.className = 'p-np'; const b = document.createElement('b'); b.textContent = 'Now playing';
-    el.append(b, [sg.title, sg.film && '(' + [sg.film, sg.year].filter(Boolean).join(', ') + ')'].filter(Boolean).join(' '));
+    el.append(b, [sg.title, sg.film && '(' + [sg.film, sg.year].filter(Boolean).join(', ') + ')', sg.raga && '· Raag ' + sg.raga].filter(Boolean).join(' '));
     p.el.appendChild(el);
   });
 })();

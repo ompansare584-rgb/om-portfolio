@@ -5,7 +5,6 @@
       "startServerReadyPattern": "Ready",
       "url": [
         "http://localhost:3000/",
-        "http://localhost:3000/hiring",
         "http://localhost:3000/editing",
         "http://localhost:3000/ragas",
         "http://localhost:3000/ragas/yaman"

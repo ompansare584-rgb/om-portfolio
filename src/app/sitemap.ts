@@ -7,6 +7,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: abs(p),
     lastModified: now,
     changeFrequency: 'monthly' as const,
-    priority: p === '/' ? 1 : p === '/hiring' || p === '/editing' ? 0.9 : p === '/ragas' ? 0.8 : 0.6,
+    priority: p === '/' ? 1 : p === '/editing' ? 0.9 : p === '/ragas' ? 0.8 : 0.6,
   }));
 }

@@ -51,7 +51,7 @@ export const personLd = (): LD => ({
   email: `mailto:${PERSON.email}`,
   affiliation: { '@type': 'CollegeOrUniversity', name: PERSON.institution, address: { '@type': 'PostalAddress', addressLocality: PERSON.city, addressRegion: PERSON.region, addressCountry: PERSON.countryCode } },
   address: { '@type': 'PostalAddress', addressLocality: PERSON.city, addressRegion: PERSON.region, addressCountry: PERSON.countryCode },
-  knowsAbout: ['Computer science', 'Software', 'Artificial intelligence', 'Digital innovation', 'Creative interfaces', 'Video editing', 'Filmmaking', 'Indian classical music', 'Ragas', 'Flute'],
+  knowsAbout: ['Video editing', 'Filmmaking', 'Cinematic storytelling', 'DaVinci Resolve', 'Adobe Premiere Pro', 'Adobe After Effects', 'Adobe Photoshop', 'Canva', 'Colour grading', 'Indian classical music', 'Ragas', 'Flute'],
   sameAs: [PERSON.github, PERSON.linkedin],
 });
 
@@ -94,4 +94,4 @@ export const ragaPageLd = (r: Raga): LD => ({
   author: { '@id': `${SITE_URL}/#person` },
 });
 
-export const ALL_PATHS = ['/', '/hiring', '/editing', '/ragas', ...RAGAS.map((r) => `/ragas/${r.slug}`)];
+export const ALL_PATHS = ['/', '/editing', '/ragas', ...RAGAS.map((r) => `/ragas/${r.slug}`)];

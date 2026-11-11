@@ -40,7 +40,6 @@ export default function SiteShell({ current, children, ld }: { current: string; 
               <h2>Find me</h2>
               <ul>
                 <li><a href={`mailto:${PERSON.email}`}>Email</a></li>
-                <li><a href={PERSON.github} rel="noopener noreferrer" target="_blank">GitHub</a></li>
                 <li><a href={PERSON.linkedin} rel="noopener noreferrer" target="_blank">LinkedIn</a></li>
               </ul>
             </div>

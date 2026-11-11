@@ -4,7 +4,7 @@ export const dynamic = 'force-static';
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return [{ slug: 'hiring' }, { slug: 'editing' }, { slug: 'ragas' }];
+  return [{ slug: 'editing' }, { slug: 'ragas' }];
 }
 
 export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {

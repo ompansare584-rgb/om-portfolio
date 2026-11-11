@@ -18,8 +18,7 @@
   <nav class="tabs" aria-label="Rooms and controls">
     <div class="keys" id="keys" role="group" aria-label="Choose a room">
       <button class="key rchip" type="button" data-go="explore" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="2"/><circle cx="16" cy="14.5" r="2.6"/><path d="M6.5 13h4M6.5 16h4M7 9l9-5"/></svg><span id="chipLab">Radio</span></button>
-      <button class="key" type="button" data-go="hiring" aria-pressed="false">Hiring</button>
-      <button class="key" type="button" data-go="edit" aria-pressed="false">Editing</button>
+      <button class="key" type="button" data-go="edit" aria-pressed="false">Edit bay</button>
     </div>
     <button class="tab ibtn" id="btnRooms" type="button" aria-label="Choose a room" aria-expanded="false" aria-controls="keys"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 5v14M15 5v14"/></svg></button>
     <button class="tab" id="btnGuide" type="button" aria-label="Programme guide"><span class="long">Programme</span>guide</button>
@@ -29,7 +28,7 @@
 </header>
 
 <main class="room off" id="room">
-  <h1 class="sr-only">Om Pansare: a portfolio built as a vintage valve radio</h1>
+  <h1 class="sr-only">Om Pansare: video editor in the making. A portfolio built as a vintage valve radio</h1>
 
   <div class="stage" id="stage">
     <div class="radio-wrap" id="wrap">
@@ -78,34 +77,32 @@
 
     <div class="side">
       <aside class="door" id="door" aria-label="Choose how to tune in">
-        <p class="pw-kicker">Om Pansare · Portfolio</p>
+        <p class="pw-kicker">Om Pansare · Video editor in the making</p>
         <div class="air"><p class="air-line" id="airLine"></p><div id="airDial" aria-hidden="true"></div></div>
-        <p class="pw-q" id="pwQ">Why are you tuning in?</p>
+        <p class="pw-q" id="pwQ">Ready to tune in?</p>
         <div class="pw-keys" id="pwKeys" role="group" aria-labelledby="pwQ">
-          <button class="key big" type="button" data-pick="hiring"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6h16l8 8v28H14z"/><path d="M30 6v8h8M20 24h14M20 30h14M20 36h9"/></svg><b>Hiring</b><small>Placement desk</small><em>Projects · resume · contact</em></button>
-          <button class="key big" type="button" data-pick="edit"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="20" width="34" height="22" rx="2"/><path d="M7 20l4-11 30 6-2 5M17 11l-4 9M27 13l-4 9M37 15l-4 9"/></svg><b>Editing</b><small>Edit bay</small><em>Reels · colour · send a brief</em></button>
+          <button class="key big" type="button" data-pick="edit"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="20" width="34" height="22" rx="2"/><path d="M7 20l4-11 30 6-2 5M17 11l-4 9M27 13l-4 9M37 15l-4 9"/></svg><b>Edit bay</b><small>The portfolio</small><em>Tools · first cuts · send a brief</em></button>
+          <button class="key big" type="button" data-pick="explore"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="18" width="36" height="22" rx="3"/><circle cx="32" cy="29" r="6"/><path d="M12 25h12M12 31h12M12 18l22-10"/></svg><b>Radio</b><small>Eight programmes</small><em>Ragas · old songs · flute</em></button>
         </div>
         <p class="pw-cap" id="pwCap"></p>
         <div class="pw-row">
-          <button class="pw-btn main" id="pwRadio" type="button">Just the radio</button>
-          <button class="pw-btn" id="pwQuiet" type="button">Quiet mode</button>
+          <button class="pw-btn main" id="pwQuiet" type="button">Quiet mode</button>
           <button class="pw-btn" id="pwGuide" type="button">Programme guide</button>
         </div>
       </aside>
 
       <aside class="hint" id="hint">
         <h2>How to tune</h2>
-        <p>Drag the needle, twist the left knob, or tap a station. Each three-hour band is one programme about me. Between stations you only get static.</p>
+        <p>Drag the needle, twist the left knob, or tap a station. Each three-hour band is one programme about my editing journey. Between stations you only get static.</p>
         <p class="near" id="near">Scanning…</p>
-        <p class="rooms"><button class="linklike" type="button" data-room="hiring">Hiring desk →</button><button class="linklike" type="button" data-room="edit">Edit bay →</button><button class="linklike" type="button" data-farm>Send a farmaish ✎</button></p>
+        <p class="rooms"><button class="linklike" type="button" data-room="edit">Open the Edit bay →</button><button class="linklike" type="button" data-farm>Send a farmaish ✎</button></p>
         <p class="fine">Raga hours follow common textbook convention and vary by gharana.</p>
       </aside>
 
       <aside class="hint bslip" id="bslip" aria-live="polite">
         <h2 id="bsTitle">What powers this set</h2>
-        <p id="bsText">Tap a valve. This is not a skills list: it is a first-year's honest map of where the curiosity points. The Raga Clock shows which raga is on air, and tapping a slice tunes the radio to it.</p>
+        <p id="bsText">Tap a valve. These are the apps I am learning to edit with: not a skills list, but a beginner's honest map. The Raga Clock shows which raga is on air, and tapping a slice tunes the radio to it.</p>
         <div class="act" id="bsAct"></div>
-        <div class="gh" id="gh"><b>GitHub</b><br><a href="https://github.com/ompansare584-rgb" target="_blank" rel="noopener">github.com/ompansare584-rgb ↗</a><span id="ghStat"></span></div>
       </aside>
 
       <article class="slip" id="slip" aria-label="Programme slip" aria-hidden="true">
@@ -121,9 +118,7 @@
         <div class="s-block"><h4>Now playing · अभी बज रहा है</h4><div data-f="np"></div></div>
         <div class="links">
           <a href="mailto:ompansare584@gmail.com">Email <span aria-hidden="true">✉</span></a>
-          <a href="https://github.com/ompansare584-rgb" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
-          <a href="https://www.linkedin.com/in/om-pansare-934bb2301" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a>
-          <span class="soon" data-resume>Resume · coming soon</span>
+          <!--@LINKS:slip@-->
           <button type="button" data-farm>Farmaish <span aria-hidden="true">✎</span></button>
         </div>
         <p class="s-foot">Raga hours follow common textbook convention and vary by gharana. Lowercase swaras are komal, M♯ is tivra Ma.</p>
@@ -132,63 +127,86 @@
   </div>
 </main>
 
-<!-- ============ PLACEMENT DESK (engineering portfolio): the 10-second version, all real text ============ -->
-<section class="page hiring" id="pageHiring" aria-label="Placement desk, engineering portfolio">
-  <div class="desk"><div class="desk-in">
-    <div class="hire-grid">
-      <div class="tp">
-        <div class="tp-slot" aria-hidden="true"><span>Taranga Press</span></div>
-        <div class="feed">
-          <article class="sheet">
-            <div class="sh-top"><span>Special bulletin</span><span class="stop">Stop press</span></div>
-            <h1 id="hTitle" tabindex="-1">Om Pansare</h1>
-            <p class="sh-role">First-year B.Tech, Computer Science Engineering</p>
-            <p class="sh-where">Vishwakarma Institute of Technology (VIT Pune) · Pune, Maharashtra · 2026–27</p>
-            <h2>The short version</h2>
-            <p>A curious mind, a creative perspective, and an appreciation for technology, art and meaningful experiences.</p>
-            <h2>What I follow</h2>
-            <ul class="sh-tags"><li>Software</li><li>Artificial intelligence</li><li>Digital innovation</li><li>Creative interfaces</li></ul>
-            <div id="shTools" hidden><h2>Tools I use</h2><ul class="sh-tags" id="shToolsList"></ul></div>
-            <h2>Where I stand, honestly</h2>
-            <p>I am at the beginning of my professional journey: no internships, no formal resume and no showcase projects yet. I would rather say that plainly than dress up experiments as achievements.</p>
-            <p class="sh-look" id="shLook" hidden></p>
-            <p class="sh-end">— End of bulletin —</p>
-          </article>
-        </div>
-      </div>
-      <aside class="on-desk" aria-label="On the desk">
-        <div class="env" id="env" role="img" aria-label="Resume envelope, arriving soon">
-          <i class="env-back"></i>
-          <div class="env-paper"><b>Resume</b><span id="envSub">Arriving soon</span></div>
-          <i class="env-front"></i><i class="env-flap"></i>
-          <span class="env-stamp" id="envStamp">Soon</span>
-        </div>
-        <a class="btag" href="mailto:ompansare584@gmail.com">Email <small>ompansare584@gmail.com</small></a>
-        <a class="btag" href="https://github.com/ompansare584-rgb" target="_blank" rel="noopener">GitHub <small>↗</small></a>
-        <a class="btag" href="https://www.linkedin.com/in/om-pansare-934bb2301" target="_blank" rel="noopener">LinkedIn <small>↗</small></a>
-        <a class="btag" href="#projects" id="toProjects">Projects <small>the workbench ↓</small></a>
-        <button class="btag after" type="button" data-radio>The radio <small>♪ ragas · old songs · flute</small></button>
-        <button class="linklike" id="hireGuide" type="button">Prefer a printed listing? Open the programme guide →</button>
-      </aside>
-    </div>
-    <section class="projects" id="projects" aria-labelledby="projTitle">
-      <h2 id="projTitle">Projects</h2>
-      <p>Everything I build gets pinned here, each with a short note on what I learned.</p>
-      <div class="peg" id="peg"></div>
-      <div class="ghbox" id="ghBox" hidden><h3>Live from my GitHub</h3><p>Pulled straight from my public repositories, so it updates whenever I push.</p><div class="peg" id="ghPeg"></div></div>
-    </section>
-  </div></div>
-</section>
+<!-- ============ BELOW THE RADIO: real, scrollable content ============ -->
+<div class="below" id="below">
+  <div class="bl-wrap">
 
-<!-- ============ EDIT BAY (video editing portfolio): honest about having no reel online yet ============ -->
+    <section class="bl-sec bl-meet" aria-labelledby="blMeet">
+      <img class="bl-pic" src="/images/om-portrait.webp" width="240" height="240" loading="lazy" decoding="async" alt="Portrait of Om Pansare">
+      <div>
+        <p class="bl-kick">राग रेडियो · Raag Radio</p>
+        <h2 id="blMeet">Meet Om, editor in the making</h2>
+        <p class="bl-lede">A first-year B.Tech Computer Science student at VIT Pune who has just started learning video editing. A curious mind, a creative perspective, and an appreciation for technology, art and meaningful experiences.</p>
+        <p>I am drawn to cinematic storytelling, visual composition and filmmaking, and I come to editing from Indian classical music and the flute, which I play as a hobby. So I listen for rhythm before I look at pictures.</p>
+        <p class="bl-honest"><b>Honest status.</b> I have no showreel, client work or published edits yet. I would rather say so than dress up practice as achievement. This page grows as my work does.</p>
+      </div>
+    </section>
+
+    <section class="bl-sec" aria-labelledby="blWays">
+      <p class="bl-kick">Inside the Edit bay</p>
+      <h2 id="blWays">What is on the desk</h2>
+      <div class="bl-ways">
+        <div class="bl-way"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="1.5"/><path d="M3 8l3-4h4L7 8M11 8l3-4h4l-3 4"/></svg><b>The toolbox</b><span>DaVinci Resolve, Premiere Pro, After Effects, Photoshop and Canva: the five apps I am learning, each marked honestly as <em>Learning</em>.</span></div>
+        <div class="bl-way"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M8 5v14M16 5v14M4 9h4M4 15h4M16 9h4M16 15h4"/></svg><b>The film strip</b><span>Empty today, and honest about it. My first cuts are spliced on as soon as they are worth watching.</span></div>
+        <div class="bl-way"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg><b>A brief form</b><span>Tell me about a reel, a short or a thumbnail. I will say honestly what I can do in the time you have.</span></div>
+      </div>
+      <div class="bl-row"><button class="bl-btn" type="button" data-enter="edit">Open the Edit bay</button></div>
+    </section>
+
+    <section class="bl-sec" aria-labelledby="blProg">
+      <p class="bl-kick">Every hour has its raga</p>
+      <h2 id="blProg">Eight programmes, one day</h2>
+      <p>In Hindustani music every raga belongs to a part of the day. Here each of the eight is a short programme about my editing journey, from the first rough cut to the last thumbnail. The radio above tunes itself to the one for your local hour.</p>
+      <div class="bl-progs">
+<!--@PROGCARDS@-->
+      </div>
+      <div class="bl-row"><button class="bl-btn" type="button" data-guide>Open the programme guide</button></div>
+    </section>
+
+    <section class="bl-sec" aria-labelledby="blListen">
+      <p class="bl-kick">Sound</p>
+      <h2 id="blListen">Listen your way</h2>
+      <p>Choose what the radio plays for each raga, or play the harmonium yourself.</p>
+      <div class="bl-modes">
+        <div class="bl-mode"><b>Flute</b><span>A bansuri alaap built only from the raga’s own notes.</span></div>
+        <div class="bl-mode"><b>Sargam</b><span>The raga’s notes, up and down: Sa Re Ga Ma.</span></div>
+        <div class="bl-mode"><b>A film song</b><span>An old film song in that raga. A link only; it opens on YouTube.</span></div>
+        <div class="bl-mode"><b>Mute</b><span>Silence, with one button that is always in reach.</span></div>
+      </div>
+      <div class="bl-row">
+        <button class="bl-btn" type="button" data-open="listen">Choose what to hear</button>
+        <button class="bl-btn ghost" type="button" data-open="harm">Play the harmonium</button>
+      </div>
+    </section>
+
+    <section class="bl-sec" aria-labelledby="blFind">
+      <p class="bl-kick">Say hello</p>
+      <h2 id="blFind">Find me</h2>
+      <div class="bl-row">
+        <a class="bl-btn" href="mailto:ompansare584@gmail.com">Email</a>
+        <!--@LINKS:below@-->
+      </div>
+    </section>
+
+    <footer class="bl-foot">
+      <p>Raga hours follow common textbook convention and vary by gharana. Lowercase swaras are komal; M♯ is tivra Ma. Film songs are links only; the audio belongs to its owners.</p>
+      <p>© Om Pansare · Pune · <a href="/llms.txt">For AI agents: llms.txt</a></p>
+    </footer>
+  </div>
+</div>
+
+
+<!-- ============ EDIT BAY (the portfolio): honest about being at the start ============ -->
 <section class="page edit" id="pageEdit" aria-label="Edit bay, video editing portfolio">
   <div class="desk"><div class="desk-in">
     <header class="bay-head">
       <button class="clap" id="clap" type="button" aria-label="Clap the clapperboard"><span class="clap-in"><span class="clap-board"><i>Scene<b>01</b></i><i>Take<b>1</b></i><i>Editor<b>Om Pansare</b></i></span><span class="clap-arm"></span></span></button>
       <div class="bay-copy">
-        <p class="kick">Edit bay</p>
+        <p class="kick">Edit bay · video editor in the making</p>
         <h1 id="eTitle" tabindex="-1">Cut, colour, compose.</h1>
-        <p>I am drawn to cinematic storytelling, video editing and visual composition: how pictures, sound and atmosphere can carry an emotion without needing words.</p>
+        <p>I am Om, a first-year B.Tech student at VIT Pune who has just started learning video editing. I am drawn to cinematic storytelling: how pictures, sound and atmosphere can carry an emotion without needing words.</p>
+        <p class="bay-honest"><b>Honest status.</b> I have no showreel, client work or published edits yet. The strip below fills up as my work does.</p>
+        <!--@LOOKING@-->
       </div>
     </header>
     <div class="strip-wrap">
@@ -196,6 +214,13 @@
       <div class="film"><div class="strip" id="strip" tabindex="0" aria-label="Film strip of my edits"></div></div>
     </div>
     <p class="strip-note" id="stripNote">No finished edits online yet. The first cuts will be spliced onto this strip as soon as there is something worth watching.</p>
+
+    <section class="sec" aria-labelledby="tbTitle">
+      <h2 id="tbTitle">The toolbox I am learning</h2>
+      <p>Five apps, one workflow: cut and grade, add motion, then dress it with a thumbnail. Every one of them is marked <em>Learning</em> because that is the truth today.</p>
+      <ul class="tools"><!--@TOOLS@--></ul>
+    </section>
+
     <section class="sec" aria-labelledby="gdTitle">
       <h2 id="gdTitle">Raw to graded</h2>
       <p>Drag the line. A colour grade I applied to this room's own skyline, as a demo. It is not a client edit.</p>
@@ -206,20 +231,46 @@
         <input id="gdRange" type="range" min="0" max="100" value="50" aria-label="Wipe between raw and graded">
       </div>
     </section>
+
+    <section class="sec" aria-labelledby="hwTitle">
+      <h2 id="hwTitle">How a brief would go</h2>
+      <p>Because I am new, I will tell you honestly what I can do in the time you have.</p>
+      <ol class="steps">
+        <li><b>Brief</b><span>You tell me what the video is for, how long it should be, and the deadline.</span></li>
+        <li><b>Assembly</b><span>I sort the footage and build a rough cut that tells the story.</span></li>
+        <li><b>Polish</b><span>Pace, colour, sound and titles, with your feedback on the cut.</span></li>
+        <li><b>Delivery</b><span>An export in the format you need, plus a thumbnail if you want one.</span></li>
+      </ol>
+    </section>
+
+    <section class="sec" aria-labelledby="lgTitle">
+      <h2 id="lgTitle">Learning log</h2>
+      <p>Short, true notes on what I tried, newest first.</p>
+      <ol class="log"><!--@LOG@--></ol>
+    </section>
+
     <section class="brief" aria-labelledby="bfTitle">
       <span class="bf-stamp" id="bfStamp" aria-hidden="true">Postmarked</span>
       <h2 id="bfTitle">Send me a brief</h2>
-      <p>A reel, a short, an event recap. Tell me what you have in mind.</p>
+      <p>A reel, a short, a gaming montage, a thumbnail. Tell me what you have in mind.</p>
       <form id="briefForm" novalidate>
         <div class="bf-grid">
           <label>Your name<input name="name" autocomplete="name"></label>
           <label>Your email<input name="email" type="email" autocomplete="email"></label>
-          <label class="wide">What are you making?<select name="kind"><option>Instagram reel or short</option><option>YouTube video</option><option>Event or wedding recap</option><option>Something else</option></select></label>
+          <label class="wide">What are you making?<select name="kind"><option>Instagram reel or short</option><option>YouTube video</option><option>Gaming montage</option><option>Event or wedding recap</option><option>Thumbnail or poster</option><option>Something else</option></select></label>
           <label class="wide">Tell me about it (length, deadline, style you like)<textarea name="msg" rows="4"></textarea></label>
         </div>
         <div class="bf-actions"><button class="solid" type="submit">Send the brief</button><button class="ghostb" type="button" id="bfCopy">Copy instead</button></div>
         <p class="bf-status" id="bfStatus" role="status"></p>
       </form>
+    </section>
+
+    <section class="sec" aria-labelledby="fdTitle">
+      <h2 id="fdTitle">Find me</h2>
+      <div class="bay-links">
+        <a href="mailto:ompansare584@gmail.com">Email</a>
+        <!--@LINKS:edit@-->
+      </div>
     </section>
     <p class="after-note"><button class="linklike" type="button" data-radio>Back to the radio: ragas, old songs and the flute →</button></p>
   </div></div>
@@ -237,14 +288,36 @@
 
 <!-- ============ HARMONIUM (opens only inside the radio) ============ -->
 <div class="dock" id="dock">
-  <button class="dk" id="flipBtn" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-14 5.3M4 20v-4h4"/></svg><span id="flipLab">Back panel</span></button>
+  <button class="dk" id="flipBtn" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-14 5.3M4 20v-4h4"/></svg><span id="flipLab" data-s="Back">Back panel</span></button>
   <button class="dk" id="harmOpen" type="button" aria-expanded="false" aria-controls="harm"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="1.5"/><path d="M7 7v11M12 7v11M17 7v11"/></svg><span id="harmLab">Harmonium</span></button>
+  <button class="dk" id="listenOpen" type="button" aria-expanded="false" aria-controls="listen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg><span>Listen</span></button>
+  <button class="dk more" id="moreBtn" type="button" aria-label="Scroll down for more about Om"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span class="dlab">More</span></button>
 </div>
+
 <section class="harm" id="harm" aria-label="Harmonium">
-  <div class="harm-head"><p class="harm-cap" id="harmCap"></p><button class="harm-x" id="harmX" type="button" aria-label="Put the harmonium away">×</button></div>
+  <div class="harm-head"><p class="harm-cap" id="harmCap"></p>
+    <div class="harm-tools"><button id="harmFree" type="button" aria-pressed="true">Free play</button><button id="octDn" type="button" aria-label="Octave down">Oct −</button><span class="harm-oct" id="octLab" aria-live="polite">Octave 0</span><button id="octUp" type="button" aria-label="Octave up">Oct +</button><button class="harm-x" id="harmX" type="button" aria-label="Put the harmonium away">×</button></div></div>
+
   <div id="hkeys" role="group" aria-label="Harmonium keys"></div>
-  <p class="harm-hint">On a keyboard: A S D F G H J K are the white keys, W E T Y U the black ones. The red dot marks the raga's vadi.</p>
+  <p class="harm-hint">On a keyboard: A S D F G H J K are the white keys, W E T Y U the black ones. Free play lets every key sound; Raga lock keeps only the raga’s own notes. The red dot marks the raga’s vadi.</p>
 </section>
+
+<!-- ============ LISTEN: what would you like to hear? ============ -->
+<section class="listen" id="listen" role="dialog" aria-labelledby="lsT" aria-modal="false">
+  <div class="ls-in">
+    <div class="ls-head"><h2 id="lsT">What would you like to hear?</h2><button class="harm-x" id="lsX" type="button" aria-label="Close">×</button></div>
+    <p class="ls-sub" id="lsSub"></p>
+    <div class="ls-opts" role="radiogroup" aria-label="Listening mode">
+      <button class="ls-o" type="button" role="radio" aria-checked="true" data-mode="flute">Flute<small>The raga’s alaap on bansuri</small></button>
+      <button class="ls-o" type="button" role="radio" aria-checked="false" data-mode="sargam">Sargam<small>The notes, up and down</small></button>
+      <button class="ls-o" type="button" role="radio" aria-checked="false" data-mode="song">A film song<small>Opens it on YouTube</small></button>
+      <button class="ls-o" type="button" role="radio" aria-checked="false" data-mode="mute">Mute<small>Silence the radio</small></button>
+    </div>
+    <div class="ls-song" id="lsSong" hidden></div>
+  </div>
+</section>
+<button class="fab" id="fabMute" type="button" aria-pressed="false" aria-label="Mute the radio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><path class="waves" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/><path class="x" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
+<p class="sgchip" id="sgChip" aria-hidden="true"></p>
 
 <!-- ============ FARMAISH: a listener's request, written on a postcard ============ -->
 <div class="farm" id="farm" role="dialog" aria-modal="true" aria-labelledby="fmTitle">
@@ -265,6 +338,7 @@
     <span class="bf-stamp" id="pcStamp" aria-hidden="true">Posted</span>
   </form>
 </div>
+<button class="cue" id="cueMore" type="button"><span>More about Om</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <!-- ============ PROGRAMME GUIDE: the real text of the whole site (works without JavaScript) ============ -->
@@ -274,19 +348,17 @@
     <header class="g-mast">
       <p class="g-kicker">राग रेडियो · Raag Radio · Programme Guide</p>
       <h1 id="gTitle">Om Pansare</h1>
-      <p class="g-dek">First-year B.Tech Computer Science student at VIT Pune, curious about technology, design, cinema, ragas and the flute.</p>
+      <p class="g-dek">Video editor in the making. First-year B.Tech student at VIT Pune, learning DaVinci Resolve, Premiere Pro, After Effects, Photoshop and Canva.</p>
       <p class="g-line"><span lang="hi">हर प्रहर का अपना राग</span> · Every hour has its raga</p>
     </header>
 
     <div class="g-about">
       <div><h2>In a few words</h2><p>A curious mind, a creative perspective, and an appreciation for technology, art and meaningful experiences.</p></div>
-      <div><h2>Honest status</h2><p>I’m at the start of my professional journey: no internships, formal resume or showcase projects yet. I’d rather say so than dress up unfinished experiments.</p></div>
+      <div><h2>Honest status</h2><p>I have only just started editing: no client work, showreel or published edits yet. I’d rather say so than dress up practice as achievement.</p></div>
       <div><h2>Find me</h2>
         <div class="g-links">
           <a href="mailto:ompansare584@gmail.com">Email <span aria-hidden="true">✉</span></a>
-          <a href="https://github.com/ompansare584-rgb" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
-          <a href="https://www.linkedin.com/in/om-pansare-934bb2301" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a>
-          <span class="soon" data-resume>Resume · coming soon</span>
+          <!--@LINKS:guide@-->
         </div>
       </div>
     </div>
