@@ -18,7 +18,7 @@ cp .env.example .env.local      # optional locally
 npm run dev                     # http://localhost:3000
 npm run build && npm run start  # production build
 ```
-Node 20.9 or newer. The `npm warn deprecated ...` lines you may see during install are harmless notices from other packages, not errors. A real error starts with `npm error`.
+Node 26 (Vercel dropped Node 20; `engines` is set to 26.x, locally use Node 22 or newer). The `npm warn deprecated ...` lines you may see during install are harmless notices from other packages, not errors. A real error starts with `npm error`.
 
 Quick look without Node: open the folder `static-preview` in VS Code and use Live Server (right-click `index.html`, Open with Live Server). It is a generated snapshot of the radio only, good for checking layout and sound. It does not include the `/editing` page or the SEO files, and it is not what you deploy.
 

@@ -4,7 +4,7 @@
   "private": true,
   "description": "Raag Radio: Om Pansare's video-editing portfolio. A vintage valve radio whose dial is a 24 hour clock.",
   "engines": {
-    "node": "20.x"
+    "node": "26.x"
   },
   "scripts": {
     "dev": "next dev",
