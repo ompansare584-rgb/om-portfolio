@@ -2,9 +2,9 @@
 :root{
   --ink:#2b1a0e; --ink-soft:#5c4330; --paper:#f8efd9; --paper-2:#efe2c2;
   --brass:#c9974a; --brass-hi:#f0d58a; --brass-lo:#7a5220; --red:#a3231a;
-  --display:var(--ff-display,'Rozha One'),'Yatra One','Noto Serif Devanagari',Georgia,serif;
-  --body:var(--ff-body,'Hind'),'Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  --wood:url(textures/wood.svg); --grain:url(textures/grain.svg); --snow:url(textures/snow.svg); --stars:url(textures/stars.svg); --doily:url(textures/doily.svg); --skyline:url(textures/skyline.svg); --lights:url(textures/lights.svg);
+  --display:var(--ff-display,'Rozha One'),var(--ff-display-dev,'Noto Serif Devanagari'),Georgia,serif;
+  --body:var(--ff-body,'Hind'),var(--ff-body-dev,'Noto Sans Devanagari'),system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --wood:url(/textures/wood.svg); --grain:url(/textures/grain.svg); --snow:url(/textures/snow.svg); --stars:url(/textures/stars.svg); --doily:url(/textures/doily.svg); --skyline:url(/textures/skyline.svg); --lights:url(/textures/lights.svg);
   --cel:clamp(40px,8vmin,80px);
   --skygap:clamp(40px,9vh,110px);
   --sk-top:40px; --sk-h:130px;
@@ -73,7 +73,7 @@ html.no-js .scene,html.no-js .room,html.no-js .fx-layer{display:none}
 .tab{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:0;text-decoration:none;font:600 13px var(--body);letter-spacing:.04em;color:var(--ink);background:linear-gradient(180deg,#f6ecd0,#e8d9b2);border-radius:3px;box-shadow:0 5px 12px rgba(0,0,0,.4);transform:rotate(.9deg)}
 .tab.ext{display:none;transform:rotate(-.6deg)}
 .tab:hover{background:linear-gradient(180deg,#fff7de,#f0e2bb)}
-.stage{--rw:min(100vw - 20px,640px,calc((100svh - var(--tb) - var(--skygap) - 200px)/.9));position:relative;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;margin-top:var(--skygap);padding:0 10px 66px}
+.stage{--rw:min(100vw - 20px,640px,calc((100svh - var(--tb) - var(--skygap) - 240px)/.9));position:relative;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;margin-top:var(--skygap);padding:0 10px 66px}
 .radio-wrap{position:relative;flex:none;width:36em;font-size:max(9.4px,calc(var(--rw)/36))}
 .radio-wrap::before{content:'';position:absolute;z-index:1;left:-100vw;right:-100vw;top:calc(100% - 2.4em);height:100vh;border-top:.18em solid rgba(255,220,160,.22);background:linear-gradient(180deg,rgba(255,206,140,.26) 0,rgba(0,0,0,.35) 1.2em,rgba(0,0,0,.66) 100%),var(--wood,#3b2010);background-size:auto,420px 260px}
 .pool{position:absolute;z-index:2;left:-9em;right:-9em;top:-7em;bottom:-9em;background:radial-gradient(ellipse at 50% 55%,rgba(255,176,80,.5),rgba(255,176,80,0) 62%);opacity:0;pointer-events:none}
@@ -670,7 +670,8 @@ body.past .dock,body.past .sgchip{opacity:0;visibility:hidden}
 /* the page below the radio */
 .below{position:relative;z-index:3;margin-top:-1px;color:#f1dfb6;background:linear-gradient(180deg,#2a160a,#1a0f07 40%,#120a05);border-top:3px solid #b88636;box-shadow:0 -18px 40px rgba(0,0,0,.45);padding:54px 0 max(26px,env(safe-area-inset-bottom))}
 .bl-wrap{max-width:1080px;margin:0 auto;padding:0 18px;display:grid;grid-template-columns:minmax(0,1fr);gap:44px}
-.bl-sec{content-visibility:auto;contain-intrinsic-size:auto 480px}
+/* content-visibility clips everything outside the section box (rings, shadows, focus outlines). The padding gives the clip room; the negative margin cancels it so nothing moves. */
+.bl-sec{content-visibility:auto;contain-intrinsic-size:auto 480px;padding:18px 18px 26px;margin:-18px -18px -26px}
 .bl-kick{font:600 12.5px var(--body);letter-spacing:.18em;text-transform:uppercase;color:#d9b160}
 .below h2{font:400 clamp(26px,4.4vw,40px)/1.1 var(--display);color:#f6dc90;margin:4px 0 12px}
 .below p{max-width:66ch}
@@ -794,3 +795,42 @@ body.in-room .below,body.in-room .dock{display:none}
 html.js body:not(.in-radio):not(.in-room):not(.past) .cue{display:inline-flex}
 body.in-radio .cue,body.in-room .cue{display:none}
 @media(prefers-reduced-motion:reduce){.cue svg{animation:none}}
+
+/* ============ The door panel always fits: it adapts to the room the radio leaves it, nothing is ever clipped ============ */
+.side{container:doorbox/size}
+@container doorbox (max-height:430px){
+  .door .air svg,.door .pw-cap,#airDial{display:none}
+  .door{padding-top:34px}
+  .door .key.big{min-height:112px;max-width:170px}
+  .door .key.big small,.door .key.big em{display:none}
+}
+@container doorbox (max-height:395px){
+  .door{padding:30px 14px 12px}
+  .door .pw-kicker{display:none}
+  .door .air-line{font-size:13px}
+  .door .pw-q{margin-top:8px;font-size:11.5px}
+  .door .pw-keys{margin-top:8px;gap:10px}
+  .door .key.big{min-height:56px;max-width:none;flex-direction:row;justify-content:center;gap:8px;padding:6px 10px}
+  .door .key.big svg{width:26px;height:26px;margin:0}
+  .door .key.big b{font-size:18px}
+  .door .pw-row{margin-top:8px;gap:8px}
+  .door .pw-btn{min-height:38px;padding:0 14px;font-size:13px}
+  .door .pw-row{flex-wrap:nowrap}
+  .door .pw-btn{flex:1 1 0;white-space:nowrap}
+  .door .key.big{height:56px}
+}
+@container doorbox (max-height:215px){
+  .door{padding:28px 12px 10px}
+  .door .pw-kicker,.door .air{display:none}
+  .door .pw-q{display:none}
+  .door .pw-keys{margin-top:0}
+}
+
+/* ============ tool icons ============ */
+.ti{display:inline-flex;flex:none}
+.ti-svg{display:block;width:100%;height:100%}
+.tool .ti{width:34px;height:34px;color:#8a5a1c;margin-bottom:4px}
+.bl-chips{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;padding:0}
+.bl-chips li{display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 8px;border-radius:99px;background:rgba(74,51,32,.09);border:1px solid rgba(138,90,28,.38);font:600 13px/1 var(--body);color:#4a3320}
+.bl-chips .ti{width:24px;height:24px;color:#8a5a1c}
+.rback .vico{opacity:.95}

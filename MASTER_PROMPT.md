@@ -131,3 +131,11 @@ Remind me, every time, what is still empty: (1) verify the songs' ragas (Bilaval
 - v3 (this build): the radio becomes the VIDEO-EDITING portfolio (`om-porfolio-edting`). Hiring room, GitHub feed, resume and projects removed; Edit bay expanded (toolbox with honest levels, film strip, brief steps, learning log). Eight programmes rewritten as editing bulletins. Front page scrolls with real content below; radio sized by width and height (no taskbar overlap); dock no longer covers the volume label. Free-play harmonium (octave shift), Listen modes (flute / sargam / song / mute), always-reachable mute button. Songs re-verified against published raga lists (Bilaval pending). Performance: non-blocking fonts, textures as files, prepaint scripts for sky and layout (CLS 0), grain animation off on phones, below-the-fold `content-visibility`, GitHub call removed.
 - Lessons: when porting CSS from one file, extract by markers, never by line numbers (a dropped closing brace once broke the Vercel build with "Unclosed block"); never read `process.env` in code the browser bundles; `@axe-core/cli` breaks installs (chromedriver download), so it is not a dependency.
 - The hiring portfolio is a separate project with its own prompt (concept "Yatra").
+
+## 3.1 decisions (after first live deploy)
+- The door panel under the radio must never clip: it adapts with container queries on `.side` (container `doorbox`), three tiers by available height.
+- Never use `content-visibility:auto` on an element whose children have shadows, rings or outlines at its edge without padding plus an equal negative margin.
+- Tool icons are original line icons from `src/content/icons.ts` (no company logos); used on the back-panel valves, the toolbox chips, the tools list and `/editing`.
+- Fonts: only two Latin files preloaded; Devanagari as separate non-preloaded families (`--ff-display-dev`, `--ff-body-dev`). `experimental.inlineCss` is on. No `interest-cohort`, no `host:` in robots.
+- SEO 69 on deployment links = Vercel noindex header; measure on the production domain in Incognito.
+- Leftover files after copying a new version over an old repo are the usual cause of surprise build errors: delete removed files (`git rm`).

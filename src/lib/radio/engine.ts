@@ -7,6 +7,7 @@
  */
 import { CONFIG as USER, SONGS } from '@/content/config';
 import { PERSON } from '@/content/site';
+import { toolIconBody } from '@/content/icons';
 
 let started = false;
 export function startRadio() {
@@ -1158,6 +1159,7 @@ const VALVES = [
   { n: ['Flute &', 'rhythm'], t: 'I play the flute as a hobby and love Indian classical music, so I listen for rhythm before pictures. I want my cuts to land with the music. Yaman, the dusk station, is where that lives.', a: ['Tune to Yaman', () => { setFlip(false); touched(); tuneTo(6, 'key'); }] }
 ];
 const NS = 'http://www.w3.org/2000/svg';
+const vIcon = (name, x, y) => { const b = toolIconBody(name); return b ? `<svg class="vico" x="${x - 12}" y="${y}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff1c8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" pointer-events="none" aria-hidden="true">${b}</svg>` : ''; };
 function buildBack() {
   const X = [52, 116, 180];
   let g = '<svg viewBox="0 0 360 292" focusable="false"><defs><radialGradient id="fg"><stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#ffb347"/><stop offset="1" stop-color="rgba(255,140,40,0)"/></radialGradient></defs>';
@@ -1171,7 +1173,7 @@ function buildBack() {
     const fy = top ? 76 : 150;
     const ly = top ? 33 : 192, lines = v.n.map((t, k) => `<tspan x="${x}" dy="${k ? 11 : 0}">${t.replace('&', '&amp;')}</tspan>`).join('');
     g += `<g class="vl" data-v="${i}" tabindex="0" role="button" aria-label="${v.n.join(' ').replace('&', 'and')}: read more"><rect class="hit" x="${x - 31}" y="${top ? 20 : 114}" width="62" height="${top ? 88 : 96}" rx="6"/>`
-      + `<path class="tube" d="${tube}"/><ellipse class="fil" cx="${x}" cy="${fy}" rx="9" ry="12"/>`
+      + `<path class="tube" d="${tube}"/><ellipse class="fil" cx="${x}" cy="${fy}" rx="9" ry="12"/>${vIcon(v.n.join(' '), x, fy - 12)}`
       + `<rect x="${x - 19}" y="${top ? 96 : 118}" width="38" height="10" rx="2" fill="#b88636"/><path d="M${x - 9} ${top ? 106 : 118}v${top ? 5 : -5}M${x} ${top ? 106 : 118}v${top ? 5 : -5}M${x + 9} ${top ? 106 : 118}v${top ? 5 : -5}" stroke="#d9b160" stroke-width="1.6"/>`
       + `<text class="lbl" x="${x}" y="${ly}">${lines}</text></g>`;
   });

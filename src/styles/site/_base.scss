@@ -4,8 +4,8 @@
   --ink: #{$ink};
   --paper: #{$paper};
   --brass: #{$brass};
-  --display: var(--ff-display, 'Rozha One'), 'Yatra One', Georgia, serif;
-  --body: var(--ff-body, 'Hind'), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --display: var(--ff-display, 'Rozha One'), var(--ff-display-dev, 'Noto Serif Devanagari'), Georgia, serif;
+  --body: var(--ff-body, 'Hind'), var(--ff-body-dev, 'Noto Sans Devanagari'), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   // window colours, set by the tiny pre-paint script from the visitor's local hour (see layout)
   --sky-a: #0a0f2c;
   --sky-b: #1a1f4a;

@@ -23,6 +23,9 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['framer-motion', 'gsap', 'three'],
+    // puts the (small, 19 KB compressed) stylesheet inside the HTML, so the first paint needs one request less.
+    // If a build ever complains about it, delete this line: nothing else depends on it.
+    inlineCss: true,
   },
   async headers() {
     return [
@@ -32,7 +35,7 @@ const nextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
         ],
       },

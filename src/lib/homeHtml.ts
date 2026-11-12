@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { RAGAS } from '@/content/ragas';
 import { CONFIG } from '@/content/config';
+import { toolIcon } from '@/content/icons';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -31,8 +32,11 @@ function progCards(): string {
 const LEVEL: Record<string, string> = { learning: 'Learning', practising: 'Practising', comfortable: 'Comfortable' };
 function toolsHtml(): string {
   return CONFIG.tools
-    .map((t) => `<li class="tool"><b>${esc(t.name)}</b><span>${esc(t.use)}</span><em class="lvl l-${t.level}">${LEVEL[t.level] ?? 'Learning'}</em></li>`)
+    .map((t) => `<li class="tool"><i class="ti">${toolIcon(t.name)}</i><b>${esc(t.name)}</b><span>${esc(t.use)}</span><em class="lvl l-${t.level}">${LEVEL[t.level] ?? 'Learning'}</em></li>`)
     .join('');
+}
+function toolChips(): string {
+  return CONFIG.tools.map((t) => `<li><i class="ti">${toolIcon(t.name)}</i><span>${esc(t.name)}</span></li>`).join('');
 }
 function logHtml(): string {
   if (!CONFIG.learning.length) return '<li class="log-empty">The log starts with my first finished practice edit.</li>';
@@ -65,12 +69,13 @@ let cache: string | null = null;
 export function buildHomeHtml(): string {
   if (cache) return cache;
   let raw = fs.readFileSync(path.join(process.cwd(), 'src/content/home.html'), 'utf8');
-  for (const m of ['<!--@PROGS@-->', '<!--@PROGCARDS@-->', '<!--@TOOLS@-->', '<!--@LOG@-->', '<!--@LOOKING@-->', '<!--@LINKS:slip@-->', '<!--@LINKS:guide@-->', '<!--@LINKS:below@-->', '<!--@LINKS:edit@-->'])
+  for (const m of ['<!--@PROGS@-->', '<!--@PROGCARDS@-->', '<!--@TOOLS@-->', '<!--@TOOLCHIPS@-->', '<!--@LOG@-->', '<!--@LOOKING@-->', '<!--@LINKS:slip@-->', '<!--@LINKS:guide@-->', '<!--@LINKS:below@-->', '<!--@LINKS:edit@-->'])
     if (!raw.includes(m)) throw new Error(`home.html lost its ${m} marker`);
   raw = raw
     .replace('<!--@PROGS@-->', progs())
     .replace('<!--@PROGCARDS@-->', progCards())
     .replace('<!--@TOOLS@-->', toolsHtml())
+    .replace('<!--@TOOLCHIPS@-->', toolChips())
     .replace('<!--@LOG@-->', logHtml())
     .replace('<!--@LOOKING@-->', lookingHtml())
     .replace('<!--@LINKS:slip@-->', linksHtml('slip'))

@@ -69,3 +69,14 @@ Not verified here (no network in the build sandbox): `npm install`, `next build`
 
 ## Rebuilding later
 Open a new chat, attach `MASTER_PROMPT.md` and this folder, paste the prompt block.
+
+## Changes in 3.1 (after the first live deploy)
+- **Nothing is cut off any more.** The panel under the radio (Edit bay / Radio / Quiet mode / Programme guide) now adapts to the room the radio leaves it, using container queries (`@container doorbox` at the end of `radio.css`). Checked at 11 widths x 8 heights.
+- **The portrait ring and button shadows were being clipped** by `content-visibility:auto` (it clips everything outside a section's box). `.bl-sec` now has padding with an equal negative margin, so the clip box is bigger and nothing moves.
+- **Tool icons** (`src/content/icons.ts`): original line icons for Resolve, Premiere Pro, After Effects, Photoshop, Canva and the flute. They are not the companies' logos. They show on the back-panel valves, the home page toolbox, the Edit bay list and `/editing`. To use official logos, download them from each company's brand page and swap the SVG strings in `icons.ts`.
+- **Performance and console noise:** only two Latin font files are preloaded now (Devanagari files load only when a Hindi letter is drawn); the stylesheet is inlined (`experimental.inlineCss`, delete that line if a build ever complains); the `interest-cohort` Permissions-Policy value (it makes Chrome log an error) and the `host:` line in robots.txt are gone.
+
+## Reading Lighthouse correctly
+- **SEO 69 on a `*.vercel.app` deployment link is almost certainly Vercel's own `x-robots-tag: noindex`** on preview and deployment-specific URLs. One failed audit ("Page is blocked from indexing") produces exactly 69. Test the production address (Vercel, Project, Domains) or a custom domain. To confirm: DevTools, Network, click the document, Response Headers.
+- Test in an **Incognito window** (your extensions slow the page and add console errors) at https://pagespeed.web.dev, which measures from Google's servers instead of your laptop and your distance from the host.
+- The Performance score is also lower on preview URLs because Vercel injects its feedback toolbar there.
