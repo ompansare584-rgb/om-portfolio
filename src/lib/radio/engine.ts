@@ -490,6 +490,9 @@ const state = { locked: -1, sweeping: false, touched: false, liveIdx: 0 };
 let powered = false, leaving = false, signing = false, signT = 0, hasPlayed = false, tuneNow = 0, lastTune = -1, quietPref = false;
 let farmOpen = false, flipped = false, view = 'explore', forView = 'edit', lastRoom = 'edit', exploreIntroDone = false, skyLocal = 12, harmOpen = false, deepRadio = false;
 try { quietPref = localStorage.getItem('raagradio.quiet') === '1'; } catch (e) {}
+// Sound consent: nothing plays until the visitor has answered once. A saved quiet choice counts as an answer.
+let askedSound = false;
+try { askedSound = localStorage.getItem('raagradio.asked') === '1' || quietPref; } catch (e) {}
 SOUND.setQuiet(quietPref);
 let cur = 0, target = 0, sv = 0, mv = 0, prevCur = 0, raw = 0;
 let mode = 'idle';          // idle | tween | spring | drag
@@ -880,7 +883,7 @@ function refreshQuietUI() {
   pwQuiet.textContent = quietPref ? 'Sound on instead' : 'Quiet mode';
   pwCap.textContent = quietPref ? 'Quiet mode is on, so nothing will play. Turn a knob on the radio, or press a key.' : 'A key switches the radio on. Open the Edit bay, or just listen.';
 }
-function saveQuiet() { try { localStorage.setItem('raagradio.quiet', quietPref ? '1' : '0'); } catch (e) {} }
+function saveQuiet() { askedSound = true; try { localStorage.setItem('raagradio.quiet', quietPref ? '1' : '0'); localStorage.setItem('raagradio.asked', '1'); } catch (e) {} }
 function setQuietMode(q) {
   quietPref = q; SOUND.setQuiet(q); saveQuiet(); refreshQuietUI();
   if (!q && powered && !leaving && SOUND.start()) {           // sound switched back on while the radio is running
@@ -982,9 +985,37 @@ function go(v, o) {
 $$('[data-go]').forEach(b => b.addEventListener('click', () => { if (b.dataset.go !== view) go(b.dataset.go, { key: true }); }));
 $$('[data-room]').forEach(b => b.addEventListener('click', () => go(b.dataset.room, { key: true })));
 miniRad.addEventListener('click', () => go('explore', { key: true }));
+/* sound consent: the first time anything would switch the radio on, ask whether sound is wanted */
+const consentEl = $('#consent'), csYes = $('#csYes'), csNo = $('#csNo');
+let consentCb = null, consentFrom = null;
+function openConsent(cb) {
+  consentCb = cb; consentFrom = document.activeElement;
+  consentEl.hidden = false; requestAnimationFrame(() => consentEl.classList.add('open')); csYes.focus({ preventScroll: true });
+}
+function answerConsent(yes) {
+  quietPref = !yes; SOUND.setQuiet(quietPref); saveQuiet(); refreshQuietUI();
+  consentEl.classList.remove('open'); consentEl.hidden = true;
+  const cb = consentCb; consentCb = null; cb && cb();        // runs inside the button press, so the browser lets audio start
+}
+csYes.addEventListener('click', () => answerConsent(true));
+csNo.addEventListener('click', () => answerConsent(false));
+consentEl.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.preventDefault(); answerConsent(false); }
+  else if (e.key === 'Tab') { e.preventDefault(); (document.activeElement === csYes ? csNo : csYes).focus(); }
+});
+document.addEventListener('click', e => {
+  const el = e.target.closest && e.target.closest('[data-pick],[data-enter],[data-open]');
+  if (!el || powered || leaving || askedSound || !consentEl.hidden) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  openConsent(() => el.click());
+}, true);
 // the radio on the first screen wakes when you touch it: any knob, the dial, the cabinet
 let wokeAt = 0; const wrapEl = $('#wrap');
-wrapEl.addEventListener('pointerdown', e => { if (powered || leaving || e.button > 0) return; e.preventDefault(); e.stopPropagation(); wokeAt = performance.now(); powerOn('explore'); }, true);
+wrapEl.addEventListener('pointerdown', e => {
+  if (powered || leaving || e.button > 0 || !consentEl.hidden) return; e.preventDefault(); e.stopPropagation();
+  if (!askedSound) { openConsent(() => { wokeAt = performance.now(); powerOn('explore'); }); return; }
+  wokeAt = performance.now(); powerOn('explore');
+}, true);
 wrapEl.addEventListener('click', e => { if (performance.now() - wokeAt < 700) { e.preventDefault(); e.stopPropagation(); } }, true);
 $$('[data-radio]').forEach(b => b.addEventListener('click', () => go('explore', { key: true })));
 $$('[data-pick]').forEach(b => b.addEventListener('click', () => { b.classList.add('down'); powerOn(b.dataset.pick, true); }));
@@ -1378,4 +1409,5 @@ setInterval(() => {
   P[state.liveIdx].el.classList.remove('live'); state.liveIdx = i; P[i].el.classList.add('live');
   if (powered && !leaving && view === 'explore' && !state.touched && !forced) tuneTo(i, 'auto');
 }, 15000);
+root.classList.add('rr-ready'); window.__rrReady = true;
 }

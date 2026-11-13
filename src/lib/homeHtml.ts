@@ -90,6 +90,7 @@ export function buildHomeHtml(): string {
  * Runs before first paint. Does the one layout job the radio engine would otherwise do after load,
  * so the skyline does not jump (keeps Cumulative Layout Shift at 0). Same maths as layout() in engine.ts.
  */
+/** No longer used on the page: radio.css now derives the same variables (checked equal at six screen sizes). Kept for reference. */
 export const PREPAINT = `(function(){try{var w=document.getElementById('wrap');if(!w)return;var H=innerHeight,c=function(v,a,b){return v<a?a:v>b?b:v};var r=w.getBoundingClientRect(),k=Math.round(c(H*.2,110,200)),s=document.documentElement.style;s.setProperty('--deskY',Math.round(c(H*.24,Math.min(130,H*.3),230))+'px');s.setProperty('--sk-h',k+'px');s.setProperty('--sk-top',Math.round(r.top+(window.scrollY||0)+44-k)+'px')}catch(e){}})();`;
 
 /** Window colour from the visitor's local hour, set in <head> before first paint (no flash). Same bands as the site layout. */

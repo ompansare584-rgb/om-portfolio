@@ -80,3 +80,9 @@ Open a new chat, attach `MASTER_PROMPT.md` and this folder, paste the prompt blo
 - **SEO 69 on a `*.vercel.app` deployment link is almost certainly Vercel's own `x-robots-tag: noindex`** on preview and deployment-specific URLs. One failed audit ("Page is blocked from indexing") produces exactly 69. Test the production address (Vercel, Project, Domains) or a custom domain. To confirm: DevTools, Network, click the document, Response Headers.
 - Test in an **Incognito window** (your extensions slow the page and add console errors) at https://pagespeed.web.dev, which measures from Google's servers instead of your laptop and your distance from the host.
 - The Performance score is also lower on preview URLs because Vercel injects its feedback toolbar there.
+
+## Sound consent (3.2)
+Nothing plays, and no audio engine is even created, until the visitor answers "Switch the sound on?" once. The question appears the first time anything would switch the radio on (a door key, tapping the radio, "Enter the Edit bay"). The answer is remembered (`raagradio.asked`, `raagradio.quiet`); the speaker button and the Listen panel change it any time. A tap that arrives before the radio has finished loading is remembered and replayed, so a fast visitor never taps a dead button.
+
+## First-paint tuning (3.3)
+Measured here with CPU and network throttling (static preview, gzip on): layout shift 0.046 down to 0.0005 on desktop, mobile first paint about 1.3 s down to about 1.0 s. Two causes were fixed: (1) a small inline script measured the radio and set the skyline position after the first paint, which moved the skyline; `radio.css` now computes the same three values itself (`--sk-h`, `--sk-top`, `--deskY`, checked equal to the old script at six screen sizes) and the script is gone; (2) the door panel grew when the engine filled in the "on air" line and the raga strip, so the space is reserved (`#airLine`, `#airDial`) and the caption already holds its final text.

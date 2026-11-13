@@ -7,7 +7,7 @@
   --wood:url(/textures/wood.svg); --grain:url(/textures/grain.svg); --snow:url(/textures/snow.svg); --stars:url(/textures/stars.svg); --doily:url(/textures/doily.svg); --skyline:url(/textures/skyline.svg); --lights:url(/textures/lights.svg);
   --cel:clamp(40px,8vmin,80px);
   --skygap:clamp(40px,9vh,110px);
-  --sk-top:40px; --sk-h:130px;
+  --sk-h:clamp(110px,20svh,200px); --sk-top:calc(var(--tb) + var(--skygap) + 44px - var(--sk-h));
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -304,7 +304,7 @@ html.no-js .power{display:none}
 .p-np b{margin-right:6px;font:600 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:#7a3b12}
 
 /* ============ ROOMS: top bar keys, front door, Placement desk, Edit bay ============ */
-:root{--tb:calc(max(10px,env(safe-area-inset-top)) + 57px);--deskY:170px;--typed:var(--ff-type,'Special Elite'),'Courier New',monospace}
+:root{--tb:calc(max(10px,env(safe-area-inset-top)) + 57px);--deskY:clamp(min(130px,30svh),24svh,230px);--typed:var(--ff-type,'Special Elite'),'Courier New',monospace}
 @media(min-width:900px){:root{--tb:calc(max(14px,env(safe-area-inset-top)) + 63px)}}
 .topbar{position:fixed;left:0;right:0;top:0;z-index:45;pointer-events:none}
 .topbar>*{pointer-events:auto}
@@ -834,3 +834,19 @@ body.in-radio .cue,body.in-room .cue{display:none}
 .bl-chips li{display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 8px;border-radius:99px;background:rgba(74,51,32,.09);border:1px solid rgba(138,90,28,.38);font:600 13px/1 var(--body);color:#4a3320}
 .bl-chips .ti{width:24px;height:24px;color:#8a5a1c}
 .rback .vico{opacity:.95}
+
+/* ============ sound consent ============ */
+.consent{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:20px;background:rgba(12,6,2,.62);opacity:0;transition:opacity .25s ease}
+.consent[hidden]{display:none}
+.consent.open{opacity:1}
+.cs-card{width:min(420px,100%);padding:22px 20px 18px;text-align:center;color:#f1dfb6;background:linear-gradient(180deg,#4a2c15,#26130a);border:2px solid #b88636;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,225,170,.25)}
+.cs-card h2{font:400 26px/1.15 var(--display);color:#f6dc90;margin:0 0 10px}
+.cs-card p{font-size:15px;line-height:1.5;margin:0 auto}
+.cs-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:16px}
+.cs-card .pw-btn{min-height:46px}
+html:not(.rr-ready) .pw-keys .key{opacity:.78}
+@media(prefers-reduced-motion:reduce){.consent{transition:none}}
+
+/* reserve the space the engine fills in later, so the door does not jump when the radio finishes loading */
+#airLine{min-height:17px}
+#airDial{min-height:43px}

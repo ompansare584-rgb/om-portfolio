@@ -84,7 +84,7 @@
           <button class="key big" type="button" data-pick="edit"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="20" width="34" height="22" rx="2"/><path d="M7 20l4-11 30 6-2 5M17 11l-4 9M27 13l-4 9M37 15l-4 9"/></svg><b>Edit bay</b><small>The portfolio</small><em>Tools · first cuts · send a brief</em></button>
           <button class="key big" type="button" data-pick="explore"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="18" width="36" height="22" rx="3"/><circle cx="32" cy="29" r="6"/><path d="M12 25h12M12 31h12M12 18l22-10"/></svg><b>Radio</b><small>Eight programmes</small><em>Ragas · old songs · flute</em></button>
         </div>
-        <p class="pw-cap" id="pwCap"></p>
+        <p class="pw-cap" id="pwCap">A key switches the radio on. Open the Edit bay, or just listen.</p>
         <div class="pw-row">
           <button class="pw-btn main" id="pwQuiet" type="button">Quiet mode</button>
           <button class="pw-btn" id="pwGuide" type="button">Programme guide</button>
@@ -303,6 +303,13 @@
 </section>
 
 <!-- ============ LISTEN: what would you like to hear? ============ -->
+<div class="consent" id="consent" role="alertdialog" aria-modal="true" aria-labelledby="csT" aria-describedby="csD" hidden>
+  <div class="cs-card">
+    <h2 id="csT">Switch the sound on?</h2>
+    <p id="csD">This radio can play a short flute sign-on and a soft tanpura drone while you look around. Nothing plays unless you say yes. You can change it any time with the speaker button.</p>
+    <div class="cs-row"><button class="pw-btn main" id="csYes" type="button">Yes, play the sound</button><button class="pw-btn" id="csNo" type="button">No, keep it quiet</button></div>
+  </div>
+</div>
 <section class="listen" id="listen" role="dialog" aria-labelledby="lsT" aria-modal="false">
   <div class="ls-in">
     <div class="ls-head"><h2 id="lsT">What would you like to hear?</h2><button class="harm-x" id="lsX" type="button" aria-label="Close">×</button></div>

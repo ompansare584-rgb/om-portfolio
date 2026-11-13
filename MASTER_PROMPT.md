@@ -139,3 +139,5 @@ Remind me, every time, what is still empty: (1) verify the songs' ragas (Bilaval
 - Fonts: only two Latin files preloaded; Devanagari as separate non-preloaded families (`--ff-display-dev`, `--ff-body-dev`). `experimental.inlineCss` is on. No `interest-cohort`, no `host:` in robots.
 - SEO 69 on deployment links = Vercel noindex header; measure on the production domain in Incognito.
 - Leftover files after copying a new version over an old repo are the usual cause of surprise build errors: delete removed files (`git rm`).
+- 3.2: Sound is opt-in. First power-on asks "Switch the sound on?" (alertdialog); no AudioContext before the answer; answer persisted; early taps are queued by RadioBoot and replayed when the engine is ready (`rr-ready` class).
+- 3.3: no inline layout script before first paint: skyline/desk variables are pure CSS (`clamp()` on `svh`, `--tb`, `--skygap`). Anything the engine fills in later must have its space reserved in CSS. Measure CLS and first paint with throttling before claiming a score.

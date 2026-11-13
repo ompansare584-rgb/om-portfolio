@@ -1,4 +1,4 @@
-import { buildHomeHtml, PREPAINT } from '@/lib/homeHtml';
+import { buildHomeHtml } from '@/lib/homeHtml';
 import RadioBoot from '@/components/radio/RadioBoot';
 import { pageMetadata, personLd, websiteLd } from '@/lib/seo';
 import { PERSON } from '@/content/site';
@@ -17,7 +17,6 @@ export default function Home() {
     <>
       {/* The radio is static markup from src/content/home.html, so it is in the HTML crawlers and AI agents download. */}
       <div dangerouslySetInnerHTML={{ __html: buildHomeHtml() }} suppressHydrationWarning />
-      <script dangerouslySetInnerHTML={{ __html: PREPAINT }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <RadioBoot />
     </>
